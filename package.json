@@ -5,7 +5,7 @@
   "main": "src/research.js",
   "type": "module",
   "scripts": {
-    "research": "node src/research.js",
+    "research": "node --env-file=.env src/research.js",
     "verify": "node src/verify.js",
     "ui": "node src/generate_ui.js"
   },

@@ -1,0 +1,2192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Composio Integration Intelligence Report | 100 Apps Analyzed</title>
+  <meta name="description" content="A comprehensive analysis of API ecosystems, auth models, developer gating, and agent buildability for 100 major applications.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-dark: #0b0f19;
+      --bg-card: rgba(17, 24, 39, 0.7);
+      --bg-card-hover: rgba(26, 36, 56, 0.85);
+      --border-color: rgba(255, 255, 255, 0.06);
+      --text-main: #f3f4f6;
+      --text-muted: #9ca3af;
+      --accent-indigo: #6366f1;
+      --accent-purple: #a855f7;
+      --accent-emerald: #10b981;
+      --accent-amber: #f59e0b;
+      --accent-rose: #f43f5e;
+      --accent-cyan: #06b6d4;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      line-height: 1.6;
+      padding: 0;
+      overflow-x: hidden;
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    a {
+      color: var(--accent-indigo);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    a:hover {
+      color: var(--accent-purple);
+    }
+
+    /* Grid & Layout */
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    header {
+      margin-bottom: 3rem;
+      position: relative;
+    }
+
+    .header-badge {
+      display: inline-flex;
+      align-items: center;
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.15), rgba(168, 85, 247, 0.15));
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      padding: 0.35rem 0.9rem;
+      border-radius: 9999px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #c084fc;
+      margin-bottom: 1rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    h1.title {
+      font-size: 2.75rem;
+      background: linear-gradient(135deg, #ffffff 30%, #a855f7 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 0.75rem;
+      line-height: 1.15;
+    }
+
+    .subtitle {
+      font-size: 1.1rem;
+      color: var(--text-muted);
+      max-width: 800px;
+    }
+
+    /* Stats Grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 3rem;
+    }
+
+    .stat-card {
+      background: var(--bg-card);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 1.5rem;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.3s ease, border-color 0.3s ease;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(99, 102, 241, 0.25);
+    }
+
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+      background: var(--accent-indigo);
+    }
+
+    .stat-card.self-serve::before { background: var(--accent-emerald); }
+    .stat-card.gated::before { background: var(--accent-rose); }
+    .stat-card.mcp::before { background: var(--accent-cyan); }
+
+    .stat-label {
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+    }
+
+    .stat-value {
+      font-size: 2.25rem;
+      font-weight: 700;
+      font-family: 'Outfit', sans-serif;
+      line-height: 1;
+      margin-bottom: 0.25rem;
+    }
+
+    .stat-desc {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    /* Tabs Navigation */
+    .tabs-nav {
+      display: flex;
+      gap: 1rem;
+      border-bottom: 1px solid var(--border-color);
+      margin-bottom: 2rem;
+      padding-bottom: 0.5rem;
+    }
+
+    .tab-btn {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 600;
+      padding: 0.5rem 1rem;
+      cursor: pointer;
+      position: relative;
+      transition: color 0.2s;
+    }
+
+    .tab-btn:hover {
+      color: var(--text-main);
+    }
+
+    .tab-btn.active {
+      color: var(--accent-indigo);
+    }
+
+    .tab-btn.active::after {
+      content: '';
+      position: absolute;
+      bottom: -0.6rem;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent-indigo), var(--accent-purple));
+      border-radius: 999px;
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+      animation: fadeIn 0.4s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Patterns Dashboard */
+    .dashboard-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    @media (max-width: 1024px) {
+      .dashboard-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .card {
+      background: var(--bg-card);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    .card-title {
+      font-size: 1.4rem;
+      margin-bottom: 1.5rem;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      padding-bottom: 0.75rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* Insights Box */
+    .insights-box {
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.05), rgba(168, 85, 247, 0.05));
+      border: 1px solid rgba(99, 102, 241, 0.15);
+      border-radius: 16px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .insights-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #c084fc;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .insights-list {
+      list-style-type: none;
+    }
+
+    .insights-list li {
+      margin-bottom: 0.75rem;
+      padding-left: 1.5rem;
+      position: relative;
+    }
+
+    .insights-list li::before {
+      content: '✦';
+      position: absolute;
+      left: 0;
+      color: var(--accent-indigo);
+      font-weight: bold;
+    }
+
+    /* Charts UI */
+    .chart-bar-container {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .chart-bar-row {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .chart-bar-label {
+      width: 140px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+
+    .chart-bar-track {
+      flex-grow: 1;
+      height: 12px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .chart-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent-indigo), var(--accent-purple));
+      border-radius: 999px;
+      transition: width 1s ease-out;
+    }
+
+    .chart-bar-value {
+      width: 40px;
+      text-align: right;
+      font-size: 0.85rem;
+      font-weight: 600;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* Category Gating Grid */
+    .cat-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1rem;
+    }
+
+    .cat-row {
+      display: flex;
+      flex-direction: column;
+      padding: 1rem;
+      background: rgba(255,255,255,0.02);
+      border: 1px solid rgba(255,255,255,0.03);
+      border-radius: 12px;
+      transition: background 0.2s;
+    }
+
+    .cat-row:hover {
+      background: rgba(255,255,255,0.04);
+    }
+
+    .cat-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.5rem;
+    }
+
+    .cat-name {
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    .cat-ratio {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .cat-bar {
+      height: 6px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 999px;
+      overflow: hidden;
+      margin-bottom: 0.25rem;
+    }
+
+    .cat-bar-fill {
+      height: 100%;
+      background: var(--accent-rose);
+      border-radius: 999px;
+    }
+
+    .cat-footer {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    /* App Matrix Filter controls */
+    .filter-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--border-color);
+      padding: 1rem;
+      border-radius: 12px;
+    }
+
+    .filter-input {
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 0.9rem;
+      outline: none;
+      min-width: 200px;
+      flex-grow: 1;
+      transition: border-color 0.2s;
+    }
+
+    .filter-input:focus {
+      border-color: var(--accent-indigo);
+    }
+
+    .filter-select {
+      background: #0f172a;
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 0.9rem;
+      outline: none;
+      min-width: 150px;
+      cursor: pointer;
+    }
+
+    /* Interactive Table */
+    .table-container {
+      overflow-x: auto;
+      border-radius: 16px;
+      border: 1px solid var(--border-color);
+      background: var(--bg-card);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.9rem;
+    }
+
+    th {
+      background: rgba(0, 0, 0, 0.25);
+      font-family: 'Outfit', sans-serif;
+      font-weight: 600;
+      color: var(--text-muted);
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid var(--border-color);
+      text-transform: uppercase;
+      font-size: 0.75rem;
+      letter-spacing: 0.05em;
+    }
+
+    td {
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid var(--border-color);
+      vertical-align: middle;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    tr {
+      transition: background-color 0.2s;
+      cursor: pointer;
+    }
+
+    tr:hover {
+      background-color: var(--bg-card-hover);
+    }
+
+    /* Badges */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.2rem 0.6rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .badge-self-serve {
+      background: rgba(16, 185, 129, 0.1);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.2);
+    }
+
+    .badge-gated {
+      background: rgba(244, 63, 94, 0.1);
+      color: #fb7185;
+      border: 1px solid rgba(244, 63, 94, 0.2);
+    }
+
+    .badge-buildable {
+      background: rgba(16, 185, 129, 0.1);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.2);
+    }
+
+    .badge-gated-blocker {
+      background: rgba(244, 63, 94, 0.1);
+      color: #fb7185;
+      border: 1px solid rgba(244, 63, 94, 0.2);
+    }
+
+    .badge-no-api {
+      background: rgba(168, 85, 247, 0.1);
+      color: #c084fc;
+      border: 1px solid rgba(168, 85, 247, 0.2);
+    }
+
+    .badge-medium-diff {
+      background: rgba(245, 158, 11, 0.1);
+      color: #fbbf24;
+      border: 1px solid rgba(245, 158, 11, 0.2);
+    }
+
+    /* Details Drawer Modal */
+    .drawer-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(4px);
+      z-index: 100;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+    }
+
+    .drawer-overlay.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .drawer {
+      position: fixed;
+      top: 0;
+      right: -450px;
+      width: 450px;
+      height: 100vh;
+      background: #0f172a;
+      border-left: 1px solid var(--border-color);
+      box-shadow: -10px 0 30px rgba(0, 0, 0, 0.5);
+      z-index: 101;
+      padding: 2.5rem 2rem;
+      overflow-y: auto;
+      transition: right 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @media (max-width: 500px) {
+      .drawer {
+        width: 100%;
+        right: -100%;
+      }
+    }
+
+    .drawer.open {
+      right: 0;
+    }
+
+    .drawer-close {
+      position: absolute;
+      top: 1.5rem;
+      right: 1.5rem;
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 1.5rem;
+      cursor: pointer;
+      line-height: 1;
+    }
+
+    .drawer-title {
+      font-size: 1.8rem;
+      margin-bottom: 1.5rem;
+      background: linear-gradient(135deg, #ffffff 40%, var(--accent-indigo) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .drawer-section {
+      margin-bottom: 1.5rem;
+    }
+
+    .drawer-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin-bottom: 0.25rem;
+      font-weight: 600;
+    }
+
+    .drawer-value {
+      font-size: 0.95rem;
+    }
+
+    .drawer-value.code {
+      font-family: 'JetBrains Mono', monospace;
+      background: rgba(0, 0, 0, 0.2);
+      padding: 0.2rem 0.4rem;
+      border-radius: 4px;
+      font-size: 0.85rem;
+    }
+
+    /* Pipeline Architecture & Verification View */
+    .arch-flow {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      position: relative;
+      margin-bottom: 2rem;
+    }
+
+    .arch-step {
+      display: flex;
+      background: rgba(255,255,255,0.02);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1.25rem;
+      gap: 1.25rem;
+      position: relative;
+    }
+
+    .arch-step-num {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent-indigo), var(--accent-purple));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+
+    .arch-step-content h3 {
+      font-size: 1.1rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .arch-step-content p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    /* Verification Comparison Table */
+    .comparison-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+      margin-top: 1.5rem;
+    }
+
+    .comparison-table th {
+      padding: 0.75rem 1rem;
+    }
+
+    .comparison-table td {
+      padding: 0.75rem 1rem;
+    }
+
+    .comparison-table tr:hover {
+      background-color: transparent;
+    }
+
+    .text-diff-del {
+      color: #fb7185;
+      text-decoration: line-through;
+      background: rgba(244, 63, 94, 0.1);
+      padding: 0.1rem 0.3rem;
+      border-radius: 4px;
+    }
+
+    .text-diff-add {
+      color: #34d399;
+      background: rgba(16, 185, 129, 0.1);
+      padding: 0.1rem 0.3rem;
+      border-radius: 4px;
+    }
+
+    /* README info */
+    .code-block {
+      background: #090d16;
+      border: 1px solid var(--border-color);
+      padding: 1rem;
+      border-radius: 8px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      overflow-x: auto;
+      margin-bottom: 1.5rem;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <header>
+      <div class="header-badge">AI-Powered Ecosystem Analysis</div>
+      <h1 class="title">Composio Tooling Intelligence Report</h1>
+      <p class="subtitle">An automated research pipeline analyzing auth patterns, developer gating, and buildability verdicts across 100 target application ecosystems.</p>
+    </header>
+
+    <!-- Stats Dashboard Grid -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-label">Total Ecosystems</div>
+        <div class="stat-value">100</div>
+        <div class="stat-desc">Analyzed across 10 categories</div>
+      </div>
+      <div class="stat-card self-serve">
+        <div class="stat-label">Self-Serve APIs</div>
+        <div class="stat-value">76</div>
+        <div class="stat-desc">Instant keys or developer trials</div>
+      </div>
+      <div class="stat-card gated">
+        <div class="stat-label">Gated APIs</div>
+        <div class="stat-value">24</div>
+        <div class="stat-desc">Sales contact, paid plans, or partnerships</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Directly Buildable</div>
+        <div class="stat-value">76</div>
+        <div class="stat-desc">Zero gating barriers for toolsets</div>
+      </div>
+      <div class="stat-card mcp">
+        <div class="stat-label">Existing MCP Servers</div>
+        <div class="stat-value">27</div>
+        <div class="stat-desc">Already supported in community</div>
+      </div>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <div class="tabs-nav">
+      <button class="tab-btn active" onclick="switchTab('tab-patterns')">Ecosystem Patterns</button>
+      <button class="tab-btn" onclick="switchTab('tab-matrix')">100 Apps Matrix</button>
+      <button class="tab-btn" onclick="switchTab('tab-agent')">Agent & Verification</button>
+    </div>
+
+    <!-- Tab 1: Patterns & Insights -->
+    <div id="tab-patterns" class="tab-content active">
+      <!-- Insights Highlight Box -->
+      <div class="insights-box">
+        <div class="insights-title">✦ Executive Pattern Summary</div>
+        <ul class="insights-list">
+          <li><strong>Auth Distribution:</strong> OAuth2 dominates in CRM, Support, and Communications, representing the primary authorization standard for collaboration. API Keys and Tokens remain standard in Developer tools, Scraping, and AI endpoints.</li>
+          <li><strong>Developer Barriers:</strong> Over <strong>24%</strong> of audited services gate developer access behind a paid tier, contract-sales request, or enterprise approval loop. This presents the single largest friction point for ecosystem building.</li>
+          <li><strong>Easy Wins:</strong> Developer platforms (GitHub, Vercel, Supabase, Cloudflare) and modern SaaS (Linear, Notion, Airtable) are the most builder-friendly with clear self-serve API keys and sandbox environments.</li>
+          <li><strong>The Outreach Tier:</strong> Enterprise systems (DealCloud, Gladly, Salesforce Commerce Cloud, PitchBook) represent "gated blacklists" requiring active customer account configuration, presenting hurdles for independent developer tooling.</li>
+        </ul>
+      </div>
+
+      <div class="dashboard-layout">
+        <!-- Auth Methods Chart -->
+        <div class="card">
+          <div class="card-title">Authorization Methods Dominance</div>
+          <div class="chart-bar-container">
+            
+              <div class="chart-bar-row">
+                <div class="chart-bar-label">OAuth2</div>
+                <div class="chart-bar-track">
+                  <div class="chart-bar-fill" style="width: 52%"></div>
+                </div>
+                <div class="chart-bar-value">52</div>
+              </div>
+              <div class="chart-bar-row">
+                <div class="chart-bar-label">API Key</div>
+                <div class="chart-bar-track">
+                  <div class="chart-bar-fill" style="width: 46%"></div>
+                </div>
+                <div class="chart-bar-value">46</div>
+              </div>
+              <div class="chart-bar-row">
+                <div class="chart-bar-label">Bearer Token</div>
+                <div class="chart-bar-track">
+                  <div class="chart-bar-fill" style="width: 44%"></div>
+                </div>
+                <div class="chart-bar-value">44</div>
+              </div>
+              <div class="chart-bar-row">
+                <div class="chart-bar-label">Basic</div>
+                <div class="chart-bar-track">
+                  <div class="chart-bar-fill" style="width: 11%"></div>
+                </div>
+                <div class="chart-bar-value">11</div>
+              </div>
+              <div class="chart-bar-row">
+                <div class="chart-bar-label">Token</div>
+                <div class="chart-bar-track">
+                  <div class="chart-bar-fill" style="width: 9%"></div>
+                </div>
+                <div class="chart-bar-value">9</div>
+              </div>
+              <div class="chart-bar-row">
+                <div class="chart-bar-label">None</div>
+                <div class="chart-bar-track">
+                  <div class="chart-bar-fill" style="width: 5%"></div>
+                </div>
+                <div class="chart-bar-value">5</div>
+              </div>
+              <div class="chart-bar-row">
+                <div class="chart-bar-label">App Access Token</div>
+                <div class="chart-bar-track">
+                  <div class="chart-bar-fill" style="width: 1%"></div>
+                </div>
+                <div class="chart-bar-value">1</div>
+              </div>
+              <div class="chart-bar-row">
+                <div class="chart-bar-label">Digest Auth</div>
+                <div class="chart-bar-track">
+                  <div class="chart-bar-fill" style="width: 1%"></div>
+                </div>
+                <div class="chart-bar-value">1</div>
+              </div>
+          </div>
+        </div>
+
+        <!-- Buildability Verdict Breakdown -->
+        <div class="card">
+          <div class="card-title">Buildability Verdicts</div>
+          <div class="chart-bar-container">
+            <div class="chart-bar-row">
+              <div class="chart-bar-label">Buildable (Self-Serve)</div>
+              <div class="chart-bar-track"><div class="chart-bar-fill" style="width: 76%; background: var(--accent-emerald)"></div></div>
+              <div class="chart-bar-value">76</div>
+            </div>
+            <div class="chart-bar-row">
+              <div class="chart-bar-label">Gated Blocker</div>
+              <div class="chart-bar-track"><div class="chart-bar-fill" style="width: 14%; background: var(--accent-rose)"></div></div>
+              <div class="chart-bar-value">14</div>
+            </div>
+            <div class="chart-bar-row">
+              <div class="chart-bar-label">Medium Difficulty</div>
+              <div class="chart-bar-track"><div class="chart-bar-fill" style="width: 3%; background: var(--accent-amber)"></div></div>
+              <div class="chart-bar-value">3</div>
+            </div>
+            <div class="chart-bar-row">
+              <div class="chart-bar-label">No API Blocker</div>
+              <div class="chart-bar-track"><div class="chart-bar-fill" style="width: 7%; background: var(--accent-purple)"></div></div>
+              <div class="chart-bar-value">7</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Gating By Category -->
+      <div class="card">
+        <div class="card-title">API Gating Index by Category <span style="font-size: 0.8rem; font-weight: normal; color: var(--text-muted)">Sorted by highest gated percentage</span></div>
+        <div class="cat-grid">
+          
+            <div class="cat-row">
+              <div class="cat-header">
+                <span class="cat-name">AI, Research and Media-native</span>
+                <span class="cat-ratio">7/10 gated</span>
+              </div>
+              <div class="cat-bar">
+                <div class="cat-bar-fill" style="width: 70%"></div>
+              </div>
+              <div class="cat-footer">
+                <span>Gated: 70%</span>
+                <span>Self-Serve: 30%</span>
+              </div>
+            </div>
+            <div class="cat-row">
+              <div class="cat-header">
+                <span class="cat-name">Finance and Fintech</span>
+                <span class="cat-ratio">5/10 gated</span>
+              </div>
+              <div class="cat-bar">
+                <div class="cat-bar-fill" style="width: 50%"></div>
+              </div>
+              <div class="cat-footer">
+                <span>Gated: 50%</span>
+                <span>Self-Serve: 50%</span>
+              </div>
+            </div>
+            <div class="cat-row">
+              <div class="cat-header">
+                <span class="cat-name">Data, SEO and Scraping</span>
+                <span class="cat-ratio">4/10 gated</span>
+              </div>
+              <div class="cat-bar">
+                <div class="cat-bar-fill" style="width: 40%"></div>
+              </div>
+              <div class="cat-footer">
+                <span>Gated: 40%</span>
+                <span>Self-Serve: 60%</span>
+              </div>
+            </div>
+            <div class="cat-row">
+              <div class="cat-header">
+                <span class="cat-name">Ecommerce</span>
+                <span class="cat-ratio">3/10 gated</span>
+              </div>
+              <div class="cat-bar">
+                <div class="cat-bar-fill" style="width: 30%"></div>
+              </div>
+              <div class="cat-footer">
+                <span>Gated: 30%</span>
+                <span>Self-Serve: 70%</span>
+              </div>
+            </div>
+            <div class="cat-row">
+              <div class="cat-header">
+                <span class="cat-name">CRM and Sales</span>
+                <span class="cat-ratio">2/10 gated</span>
+              </div>
+              <div class="cat-bar">
+                <div class="cat-bar-fill" style="width: 20%"></div>
+              </div>
+              <div class="cat-footer">
+                <span>Gated: 20%</span>
+                <span>Self-Serve: 80%</span>
+              </div>
+            </div>
+            <div class="cat-row">
+              <div class="cat-header">
+                <span class="cat-name">Marketing, Ads, Email and Social</span>
+                <span class="cat-ratio">2/10 gated</span>
+              </div>
+              <div class="cat-bar">
+                <div class="cat-bar-fill" style="width: 20%"></div>
+              </div>
+              <div class="cat-footer">
+                <span>Gated: 20%</span>
+                <span>Self-Serve: 80%</span>
+              </div>
+            </div>
+            <div class="cat-row">
+              <div class="cat-header">
+                <span class="cat-name">Support and Helpdesk</span>
+                <span class="cat-ratio">1/10 gated</span>
+              </div>
+              <div class="cat-bar">
+                <div class="cat-bar-fill" style="width: 10%"></div>
+              </div>
+              <div class="cat-footer">
+                <span>Gated: 10%</span>
+                <span>Self-Serve: 90%</span>
+              </div>
+            </div>
+            <div class="cat-row">
+              <div class="cat-header">
+                <span class="cat-name">Communications and Messaging</span>
+                <span class="cat-ratio">0/10 gated</span>
+              </div>
+              <div class="cat-bar">
+                <div class="cat-bar-fill" style="width: 0%"></div>
+              </div>
+              <div class="cat-footer">
+                <span>Gated: 0%</span>
+                <span>Self-Serve: 100%</span>
+              </div>
+            </div>
+            <div class="cat-row">
+              <div class="cat-header">
+                <span class="cat-name">Developer, Infra and Data platforms</span>
+                <span class="cat-ratio">0/10 gated</span>
+              </div>
+              <div class="cat-bar">
+                <div class="cat-bar-fill" style="width: 0%"></div>
+              </div>
+              <div class="cat-footer">
+                <span>Gated: 0%</span>
+                <span>Self-Serve: 100%</span>
+              </div>
+            </div>
+            <div class="cat-row">
+              <div class="cat-header">
+                <span class="cat-name">Productivity and Project Management</span>
+                <span class="cat-ratio">0/10 gated</span>
+              </div>
+              <div class="cat-bar">
+                <div class="cat-bar-fill" style="width: 0%"></div>
+              </div>
+              <div class="cat-footer">
+                <span>Gated: 0%</span>
+                <span>Self-Serve: 100%</span>
+              </div>
+            </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab 2: 100 Apps Matrix -->
+    <div id="tab-matrix" class="tab-content">
+      <div class="filter-bar">
+        <input type="text" id="search-input" class="filter-input" placeholder="Search by name, summary or blockers..." onkeyup="filterMatrix()">
+        
+        <select id="filter-category" class="filter-select" onchange="filterMatrix()">
+          <option value="">All Categories</option>
+          <option value="CRM and Sales">CRM and Sales</option><option value="Support and Helpdesk">Support and Helpdesk</option><option value="Communications and Messaging">Communications and Messaging</option><option value="Marketing, Ads, Email and Social">Marketing, Ads, Email and Social</option><option value="Ecommerce">Ecommerce</option><option value="Data, SEO and Scraping">Data, SEO and Scraping</option><option value="Developer, Infra and Data platforms">Developer, Infra and Data platforms</option><option value="Productivity and Project Management">Productivity and Project Management</option><option value="Finance and Fintech">Finance and Fintech</option><option value="AI, Research and Media-native">AI, Research and Media-native</option>
+        </select>
+
+        <select id="filter-access" class="filter-select" onchange="filterMatrix()">
+          <option value="">All Access Types</option>
+          <option value="Self-serve">Self-serve</option>
+          <option value="Gated">Gated</option>
+        </select>
+
+        <select id="filter-verdict" class="filter-select" onchange="filterMatrix()">
+          <option value="">All Verdicts</option>
+          <option value="Buildable">Buildable</option>
+          <option value="Gated Blocker">Gated Blocker</option>
+          <option value="No API Blocker">No API Blocker</option>
+          <option value="Medium Difficulty">Medium Difficulty</option>
+        </select>
+      </div>
+
+      <div class="table-container">
+        <table id="matrix-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>App Name</th>
+              <th>Category</th>
+              <th>Auth Model</th>
+              <th>Access</th>
+              <th>Verdict</th>
+              <th>Documentation</th>
+            </tr>
+          </thead>
+          <tbody>
+            
+              <tr onclick="showAppDetails(1)">
+                <td style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-muted);">1</td>
+                <td style="font-weight: 600;">Salesforce</td>
+                <td style="font-size: 0.85rem; color: var(--text-muted);">CRM and Sales</td>
+                <td><span style="font-size: 0.85rem;">OAuth2, Bearer Token</span></td>
+                <td><span class="badge badge-self-serve">Self-serve</span></td>
+                <td><span class="badge badge-buildable">Buildable</span></td>
+                <td onclick="event.stopPropagation()"><a href="https://developer.salesforce.com/docs" target="_blank" style="font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.25rem;">Docs ↗</a></td>
+              </tr>
+              <tr onclick="showAppDetails(2)">
+                <td style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-muted);">2</td>
+                <td style="font-weight: 600;">HubSpot</td>
+                <td style="font-size: 0.85rem; color: var(--text-muted);">CRM and Sales</td>
+                <td><span style="font-size: 0.85rem;">OAuth2, API Key</span></td>
+                <td><span class="badge badge-self-serve">Self-serve</span></td>
+                <td><span class="badge badge-buildable">Buildable</span></td>
+                <td onclick="event.stopPropagation()"><a href="https://developers.hubspot.com/docs/api/overview" target="_blank" style="font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.25rem;">Docs ↗</a></td>
+              </tr>
+              <tr onclick="showAppDetails(3)">
+                <td style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-muted);">3</td>
+                <td style="font-weight: 600;">Pipedrive</td>
+                <td style="font-size: 0.85rem; color: var(--text-muted);">CRM and Sales</td>
+                <td><span style="font-size: 0.85rem;">OAuth2, API Key</span></td>
+                <td><span class="badge badge-self-serve">Self-serve</span></td>
+                <td><span class="badge badge-buildable">Buildable</span></td>
+                <td onclick="event.stopPropagation()"><a href="https://developers.pipedrive.com/" target="_blank" style="font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.25rem;">Docs ↗</a></td>
+              </tr>
+              <tr onclick="showAppDetails(4)">
+                <td style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-muted);">4</td>
+                <td style="font-weight: 600;">Attio</td>
+                <td style="font-size: 0.85rem; color: var(--text-muted);">CRM and Sales</td>
+                <td><span style="font-size: 0.85rem;">OAuth2, API Key</span></td>
+                <td><span class="badge badge-self-serve">Self-serve</span></td>
+                <td><span class="badge badge-buildable">Buildable</span></td>
+                <td onclick="event.stopPropagation()"><a href="https://developers.attio.com/" target="_blank" style="font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.25rem;">Docs ↗</a></td>
+              </tr>
+              <tr onclick="showAppDetails(5)">
+                <td style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-muted);">5</td>
+                <td style="font-weight: 600;">Twenty</td>
+                <td style="font-size: 0.85rem; color: var(--text-muted);">CRM and Sales</td>
+                <td><span style="font-size: 0.85rem;">Bearer Token, API Key</span></td>
+                <td><span class="badge badge-self-serve">Self-serve</span></td>
+                <td><span class="badge badge-buildable">Buildable</span></td>
+                <td onclick="event.stopPropagation()"><a href="https://docs.twenty.com/developers/api/introduction" target="_blank" style="font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.25rem;">Docs ↗</a></td>
+              </tr>
+              <tr onclick="showAppDetails(6)">
+                <td style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-muted);">6</td>
+                <td style="font-weight: 600;">Podio</td>
+                <td style="font-size: 0.85rem; color: var(--text-muted);">CRM and Sales</td>
+                <td><span style="font-size: 0.85rem;">OAuth2</span></td>
+                <td><span class="badge badge-self-serve">Self-serve</span></td>
+                <td><span class="badge badge-buildable">Buildable</span></td>
+                <td onclick="event.stopPropagation()"><a href="https://developers.podio.com/" target="_blank" style="font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.25rem;">Docs ↗</a></td>
+              </tr>
+              <tr onclick="showAppDetails(7)">
+                <td style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-muted);">7</td>
+                <td style="font-weight: 600;">Zoho CRM</td>
+                <td style="font-size: 0.85rem; color: var(--text-muted);">CRM and Sales</td>
+                <td><span style="font-size: 0.85rem;">OAuth2</span></td>
+                <td><span class="badge badge-self-serve">Self-serve</span></td>
+                <td><span class="badge badge-buildable">Buildable</span></td>
+                <td onclick="event.stopPropagation()"><a href="https://www.zoho.com/crm/developer/docs/api/v3/" target="_blank" style="font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.25rem;">Docs ↗</a></td>
+              </tr>
+              <tr onclick="showAppDetails(8)">
+                <td style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-muted);">8</td>
+                <td style="font-weight: 600;">Close</td>
+                <td style="font-size: 0.85rem; color: var(--text-muted);">CRM and Sales</td>
+                <td><span style="font-size: 0.85rem;">API Key</span></td>
+                <td><span class="badge badge-self-serve">Self-serve</span></td>
+                <td><span class="badge badge-buildable">Buildable</span></td>
+                <td onclick="event.stopPropagation()"><a href="https://developer.close.com/" target="_blank" style="font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.25rem;">Docs ↗</a></td>
+              </tr>
+              <tr onclick="showAppDetails(9)">
+                <td style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-muted);">9</td>
+                <td style="font-weight: 600;">Copper</td>
+                <td style="font-size: 0.85rem; color: var(--text-muted);">CRM and Sales</td>
+                <td><span style="font-size: 0.85rem;">API Key</span></td>
+                <td><span class="badge badge-gated">Gated</span></td>
+                <td><span class="badge badge-gated-blocker">Gated Blocker</span></td>
+                <td onclick="event.stopPropagation()"><a href="https://developer.copper.com/api-getting-started.html" target="_blank" style="font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.25rem;">Docs ↗</a></td>
+              </tr>
+              <tr onclick="showAppDetails(10)">
+                <td style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-muted);">10</td>
+                <td style="font-weight: 600;">DealCloud</td>
+                <td style="font-size: 0.85rem; color: var(--text-muted);">CRM and Sales</td>
+                <td><span style="font-size: 0.85rem;">OAuth2, Token</span></td>
+                <td><span class="badge badge-gated">Gated</span></td>
+                <td><span class="badge badge-gated-blocker">Gated Blocker</span></td>
+                <td onclick="event.stopPropagation()"><a href="https://api.docs.dealcloud.com" target="_blank" style="font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.25rem;">Docs ↗</a></td>
+              </tr>
+              <tr onclick="showAppDetails(11)">
+                <td style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-muted);">11</td>
+                <td style="font-weight: 600;">Zendesk</td>
+                <td style="font-size: 0.85rem; color: var(--text-muted);">Support and Helpdesk</td>
+                <td><span style="font-size: 0.85rem;">OAuth2, API Key, Basic, Token</span></td>
+                <td><span class="badge badge-self-serve">Self-serve</span></td>
+                <td><span class="badge badge-buildable">Buildable</span></td>
+                <td onclick="event.stopPropagation()"><a href="https://developer.zendesk.com/api-reference/" target="_blank" style="font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.25rem;">Docs ↗</a></td>
+              </tr>
+              <tr onclick="showAppDetails(12)">
+                <td style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-muted);">12</td>
+                <td style="font-weight: 600;">Intercom</td>
+                <td style="font-size: 0.85rem; color: var(--text-muted);">Support and Helpdesk</td>
+                <td><span style="font-size: 0.85rem;">OAuth2, Bearer Token</span></td>
+                <td><span class="badge badge-self-serve">Self-serve</span></td>
+                <td><span class="badge badge-buildable">Buildable</span></td>
+                <td onclick="event.stopPropagation()"><a href="https://developers.intercom.com/" target="_blank" style="font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.25rem;">Docs ↗</a></td>
+              </tr>
+              <tr onclick="showAppDetails(13)">
+                <td style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-muted);">13</td>
+                <td style="font-weight: 600;">Freshdesk</td>
+                <td style="font-size: 0.85rem; color: var(--text-muted);">Support and Helpdesk</td>
+                <td><span style="font-size: 0.85rem;">API Key, Basic, OAuth2</span></td>
+                <td><span class="badge badge-self-serve">Self-serve</span></td>
+                <td><span class="badge badge-buildable">Buildable</span></td>
+                <td onclick="event.stopPropagation()"><a href="https://developers.freshdesk.com/api/" target="_blank" style="font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.25rem;">Docs ↗</a></td>
+              </tr>
+              <tr onclick="showAppDetails(14)">
+                <td style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-muted);">14</td>
+                <td style="font-weight: 600;">Front</td>
+                <td style="font-size: 0.85rem; color: var(--text-muted);">Support and Helpdesk</td>
+                <td><span style="font-size: 0.85rem;">OAuth2, Bearer Token</span></td>
+                <td><span class="badge badge-self-serve">Self-serve</span></td>
+                <td><span class="badge badge-buildable">Buildable</span></td>
+                <td onclick="event.stopPropagation()"><a href="https://dev.frontapp.com/" target="_blank" style="font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.25rem;">Docs ↗</a></td>
+              </tr>
+              <tr onclick="showAppDetails(15)">
+                <td style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-muted);">15</td>
+                <td style="font-weight: 600;">Pylon</td>
+                <td style="font-size: 0.85rem; color: var(--text-muted);">Support and Helpdesk</td>
+                <td><span style="font-size: 0.85rem;">API Key</span></td>
+                <td><span class="badge badge-self-serve">Self-serve</span></td>
+                <td><span class="badge badge-buildable">Buildable</span></td>
+                <td onclick="event.stopPropagation()"><a href="https://docs.usepylon.com/api-reference" target="_blank" style="font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.25rem;">Docs ↗</a></td>
+              </tr>
+              <tr onclick="showAppDetails(16)">
+                <td style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-muted);">16</td>
+                <td style="font-weight: 600;">LiveAgent</td>
+                <td style="font-size: 0.85rem; color: var(--text-muted);">Support and Helpdesk</td>
+                <td><span style="font-size: 0.85rem;">API Key</span></td>
+                <td><span class="badge badge-self-serve">Self-serve</span></td>
+                <td><span class="badge badge-buildable">Buildable</span></td>
+                <td onclick="event.stopPropagation()"><a href="https://www.liveagent.com/docs/api/" target="_blank" style="font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.25rem;">Docs ↗</a></td>
+              </tr>
+              <tr onclick="showAppDetails(17)">
+                <td style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-muted);">17</td>
+                <td style="font-weight: 600;">Plain</td>
+                <td style="font-size: 0.85rem; color: var(--text-muted);">Support and Helpdesk</td>
+                <td><span style="font-size: 0.85rem;">Bearer Token</span></td>
+                <td><span class="badge badge-self-serve">Self-serve</span></td>
+                <td><span class="badge badge-buildable">Buildable</span></td>
+                <td onclick="event.stopPropagation()"><a href="https://www.plain.com/docs/api" target="_blank" style="font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.25rem;">Docs ↗</a></td>
+              </tr>
+              <tr onclick="showAppDetails(18)">
+                <td style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-muted);">18</td>
+                <td style="font-weight: 600;">Help Scout</td>
+                <td style="font-size: 0.85rem; color: var(--text-muted);">Support and Helpdesk</td>
+                <td><span style="font-size: 0.85rem;">OAuth2, API Key</span></td>
+                <td><span class="badge badge-self-serve">Self-serve</span></td>
+                <td><span class="badge badge-buildable">Buildable</span></td>
+                <td onclick="event.stopPropagation()"><a href="https://developer.helpscout.com/mailbox-api/" target="_blank" style="font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.25rem;">Docs ↗</a></td>
+              </tr>
+              <tr onclick="showAppDetails(19)">
+                <td style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-muted);">19</td>
+                <td style="font-weight: 600;">Gorgias</td>
+                <td style="font-size: 0.85rem; color: var(--text-muted);">Support and Helpdesk</td>
+                <td><span style="font-size: 0.85rem;">Bearer Token, OAuth2</span></td>
+                <td><span class="badge badge-self-serve">Self-serve</span></td>
+                <td><span class="badge badge-buildable">Buildable</span></td>
+                <td onclick="event.stopPropagation()"><a href="https://developers.gorgias.com/" target="_blank" style="font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.25rem;">Docs ↗</a></td>
+              </tr>
+              <tr onclick="showAppDetails(20)">
+                <td style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-muted);">20</td>
+                <td style="font-weight: 600;">Gladly</td>
+                <td style="font-size: 0.85rem; color: var(--text-muted);">Support and Helpdesk</td>
+                <td><span style="font-size: 0.85rem;">Bearer Token, Basic</span></td>
+                <td><span class="badge badge-gated">Gated</span></td>
+                <td><span class="badge badge-gated-blocker">Gated Blocker</span></td>
+                <td onclick="event.stopPropagation()"><a href="https://developer.gladly.com/rest/" target="_blank" style="font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.25rem;">Docs ↗</a></td>
+              </tr>
+              <tr onclick="showAppDetails(21)">
+                <td style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-muted);">21</td>
+                <td style="font-weight: 600;">Slack</td>
+                <td style="font-size: 0.85rem; color: var(--text-muted);">Communications and Messaging</td>
+                <td><span style="font-size: 0.85rem;">OAuth2, Bearer Token</span></td>
+                <td><span class="badge badge-self-serve">Self-serve</span></td>
+                <td><span class="badge badge-buildable">Buildable</span></td>
+                <td onclick="event.stopPropagation()"><a href="https://api.slack.com/" target="_blank" style="font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.25rem;">Docs ↗</a></td>
+              </tr>
+              <tr onclick="showAppDetails(22)">
+                <td style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-muted);">22</td>
+                <td style="font-weight: 600;">Twilio</td>
+                <td style="font-size: 0.85rem; color: var(--text-muted);">Communications and Messaging</td>
+                <td><span style="font-size: 0.85rem;">API Key, Basic, Bearer Token</span></td>
+                <td><span class="badge badge-self-serve">Self-serve</span></td>
+                <td><span class="badge badge-buildable">Buildable</span></td>
+                <td onclick="event.stopPropagation()"><a href="https://www.twilio.com/docs" target="_blank" style="font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.25rem;">Docs ↗</a></td>
+              </tr>
+              <tr onclick="showAppDetails(23)">
+                <td style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-muted);">23</td>
+                <td style="font-weight: 600;">Zoho Cliq</td>
+                <td style="font-size: 0.85rem; color: var(--text-muted);">Communications and Messaging</td>
+                <td><span style="font-size: 0.85rem;">OAuth2, Bearer Token</span></td>
+                <td><span class="badge badge-self-serve">Self-serve</span></td>
+                <td><span class="badge badge-buildable">Buildable</span></td>
+                <td onclick="event.stopPropagation()"><a href="https://www.zoho.com/cliq/help/rest-api/api-reference.html" target="_blank" style="font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.25rem;">Docs ↗</a></td>
+              </tr>
+              <tr onclick="showAppDetails(24)">
+                <td style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-muted);">24</td>
+                <td style="font-weight: 600;">Lark (Larksuite)</td>
+                <td style="font-size: 0.85rem; color: var(--text-muted);">Communications and Messaging</td>
+                <td><span style="font-size: 0.85rem;">OAuth2, App Access Token</span></td>
+                <td><span class="badge badge-self-serve">Self-serve</span></td>
+                <td><span class="badge badge-buildable">Buildable</span></td>
+                <td onclick="event.stopPropagation()"><a href="https://open.larksuite.com/document/home/index" target="_blank" style="font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.25rem;">Docs ↗</a></td>
+              </tr>
+              <tr onclick="showAppDetails(25)">
+                <td style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-muted);">25</td>
+                <td style="font-weight: 600;">Pumble</td>
+                <td style="font-size: 0.85rem; color: var(--text-muted);">Communications and Messaging</td>
+                <td><span style="font-size: 0.85rem;">OAuth2, Bearer Token</span></td>
+                <td><span class="badge badge-self-serve">Self-serve</span></td>
+                <td><span class="badge badge-buildable">Buildable</span></td>
+                <td onclick="event.stopPropagation()"><a href="https://pumble.com/help/integrations/pumble-api/" target="_blank" style="font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.25rem;">Docs ↗</a></td>
+              </tr>
+              <tr onclick="showAppDetails(26)">
+                <td style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-muted);">26</td>
+                <td style="font-weight: 600;">Discord</td>
+                <td style="font-size: 0.85rem; color: var(--text-muted);">Communications and Messaging</td>
+                <td><span style="font-size: 0.85rem;">OAuth2, Bearer Token</span></td>
+                <td><span class="badge badge-self-serve">Self-serve</span></td>
+                <td><span class="badge badge-buildable">Buildable</span></td>
+                <td onclick="event.stopPropagation()"><a href="https://discord.com/developers/docs" target="_blank" style="font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.25rem;">Docs ↗</a></td>
+              </tr>
+              <tr onclick="showAppDetails(27)">
+                <td style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-muted);">27</td>
+                <td style="font-weight: 600;">Telegram</td>
+                <td style="font-size: 0.85rem; color: var(--text-muted);">Communications and Messaging</td>
+                <td><span style="font-size: 0.85rem;">API Key, Bearer Token</span></td>
+                <td><span class="badge badge-self-serve">Self-serve</span></td>
+                <td><span class="badge badge-buildable">Buildable</span></td>
+                <td onclick="event.stopPropagation()"><a href="https://core.telegram.org/api" target="_blank" style="font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.25rem;">Docs ↗</a></td>
+              </tr>
+              <tr onclick="showAppDetails(28)">
+                <td style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-muted);">28</td>
+                <td style="font-weight: 600;">WhatsApp Business</td>
+                <td style="font-size: 0.85rem; color: var(--text-muted);">Communications and Messaging</td>
+                <td><span style="font-size: 0.85rem;">Token</span></td>
+                <td><span class="badge badge-self-serve">Self-serve</span></td>
+                <td><span class="badge badge-buildable">Buildable</span></td>
+                <td onclick="event.stopPropagation()"><a href="https://developers.facebook.com/docs/whatsapp" target="_blank" style="font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.25rem;">Docs ↗</a></td>
+              </tr>
+              <tr onclick="showAppDetails(29)">
+                <td style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-muted);">29</td>
+                <td style="font-weight: 600;">Aircall</td>
+                <td style="font-size: 0.85rem; color: var(--text-muted);">Communications and Messaging</td>
+                <td><span style="font-size: 0.85rem;">API Key, Bearer Token, Basic</span></td>
+                <td><span class="badge badge-self-serve">Self-serve</span></td>
+                <td><span class="badge badge-buildable">Buildable</span></td>
+                <td onclick="event.stopPropagation()"><a href="https://developer.aircall.io/" target="_blank" style="font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.25rem;">Docs ↗</a></td>
+              </tr>
+              <tr onclick="showAppDetails(30)">
+                <td style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-muted);">30</td>
+                <td style="font-weight: 600;">Vonage</td>
+                <td style="font-size: 0.85rem; color: var(--text-muted);">Communications and Messaging</td>
+                <td><span style="font-size: 0.85rem;">API Key, Bearer Token, Basic</span></td>
+                <td><span class="badge badge-self-serve">Self-serve</span></td>
+                <td><span class="badge badge-buildable">Buildable</span></td>
+                <td onclick="event.stopPropagation()"><a href="https://developer.vonage.com/en/api" target="_blank" style="font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.25rem;">Docs ↗</a></td>
+              </tr>
+              <tr onclick="showAppDetails(31)">
+                <td style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-muted);">31</td>
+                <td style="font-weight: 600;">Google Ads</td>
+                <td style="font-size: 0.85rem; color: var(--text-muted);">Marketing, Ads, Email and Social</td>
+                <td><span style="font-size: 0.85rem;">OAuth2</span></td>
+                <td><span class="badge badge-self-serve">Self-serve</span></td>
+                <td><span class="badge badge-buildable">Buildable</span></td>
+                <td onclick="event.stopPropagation()"><a href="https://developers.google.com/google-ads/api/docs/start" target="_blank" style="font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.25rem;">Docs ↗</a></td>
+              </tr>
+              <tr onclick="showAppDetails(32)">
+                <td style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-muted);">32</td>
+                <td style="font-weight: 600;">Meta Ads</td>
+                <td style="font-size: 0.85rem; color: var(--text-muted);">Marketing, Ads, Email and Social</td>
+                <td><span style="font-size: 0.85rem;">OAuth2, Bearer Token</span></td>
+                <td><span class="badge badge-self-serve">Self-serve</span></td>
+                <td><span class="badge badge-buildable">Buildable</span></td>
+                <td onclick="event.stopPropagation()"><a href="https://developers.facebook.com/docs/marketing-apis" target="_blank" style="font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.25rem;">Docs ↗</a></td>
+              </tr>
+              <tr onclick="showAppDetails(33)">
+                <td style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-muted);">33</td>
+                <td style="font-weight: 600;">LinkedIn Ads</td>
+                <td style="font-size: 0.85rem; color: var(--text-muted);">Marketing, Ads, Email and Social</td>
+                <td><span style="font-size: 0.85rem;">OAuth2</span></td>
+                <td><span class="badge badge-gated">Gated</span></td>
+                <td><span class="badge badge-medium-diff">Medium Difficulty</span></td>
+                <td onclick="event.stopPropagation()"><a href="https://learn.microsoft.com/en-us/linkedin/marketing/overview" target="_blank" style="font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.25rem;">Docs ↗</a></td>
+              </tr>
+              <tr onclick="showAppDetails(34)">
+                <td style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-muted);">34</td>
+                <td style="font-weight: 600;">GoHighLevel</td>
+                <td style="font-size: 0.85rem; color: var(--text-muted);">Marketing, Ads, Email and Social</td>
+                <td><span style="font-size: 0.85rem;">OAuth2, API Key</span></td>
+                <td><span class="badge badge-gated">Gated</span></td>
+                <td><span class="badge badge-gated-blocker">Gated Blocker</span></td>
+                <td onclick="event.stopPropagation()"><a href="https://highlevel.stoplight.io/docs/integrations/e72a443a57125-getting-started" target="_blank" style="font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.25rem;">Docs ↗</a></td>
+              </tr>
+              <tr onclick="showAppDetails(35)">
+                <td style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-muted);">35</td>
+                <td style="font-weight: 600;">Mailchimp</td>
+                <td style="font-size: 0.85rem; color: var(--text-muted);">Marketing, Ads, Email and Social</td>
+                <td><span style="font-size: 0.85rem;">OAuth2, API Key</span></td>
+                <td><span class="badge badge-self-serve">Self-serve</span></td>
+                <td><span class="badge badge-buildable">Buildable</span></td>
+                <td onclick="event.stopPropagation()"><a href="https://mailchimp.com/developer/marketing/api/" target="_blank" style="font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.25rem;">Docs ↗</a></td>
+              </tr>
+              <tr onclick="showAppDetails(36)">
+                <td style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-muted);">36</td>
+                <td style="font-weight: 600;">Klaviyo</td>
+                <td style="font-size: 0.85rem; color: var(--text-muted);">Marketing, Ads, Email and Social</td>
+                <td><span style="font-size: 0.85rem;">Bearer Token</span></td>
+                <td><span class="badge badge-self-serve">Self-serve</span></td>
+                <td><span class="badge badge-buildable">Buildable</span></td>
+                <td onclick="event.stopPropagation()"><a href="https://developers.klaviyo.com/" target="_blank" style="font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.25rem;">Docs ↗</a></td>
+              </tr>
+              <tr onclick="showAppDetails(37)">
+                <td style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-muted);">37</td>
+                <td style="font-weight: 600;">systeme.io</td>
+                <td style="font-size: 0.85rem; color: var(--text-muted);">Marketing, Ads, Email and Social</td>
+                <td><span style="font-size: 0.85rem;">API Key</span></td>
+                <td><span class="badge badge-self-serve">Self-serve</span></td>
+                <td><span class="badge badge-buildable">Buildable</span></td>
+                <td onclick="event.stopPropagation()"><a href="https://docs.systeme.io/" target="_blank" style="font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.25rem;">Docs ↗</a></td>
+              </tr>
+              <tr onclick="showAppDetails(38)">
+                <td style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-muted);">38</td>
+                <td style="font-weight: 600;">Pinterest</td>
+                <td style="font-size: 0.85rem; color: var(--text-muted);">Marketing, Ads, Email and Social</td>
+                <td><span style="font-size: 0.85rem;">OAuth2, Bearer Token</span></td>
+                <td><span class="badge badge-self-serve">Self-serve</span></td>
+                <td><span class="badge badge-buildable">Buildable</span></td>
+                <td onclick="event.stopPropagation()"><a href="https://developers.pinterest.com/" target="_blank" style="font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.25rem;">Docs ↗</a></td>
+              </tr>
+              <tr onclick="showAppDetails(39)">
+                <td style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-muted);">39</td>
+                <td style="font-weight: 600;">Threads (Meta)</td>
+                <td style="font-size: 0.85rem; color: var(--text-muted);">Marketing, Ads, Email and Social</td>
+                <td><span style="font-size: 0.85rem;">OAuth2</span></td>
+                <td><span class="badge badge-self-serve">Self-serve</span></td>
+                <td><span class="badge badge-buildable">Buildable</span></td>
+                <td onclick="event.stopPropagation()"><a href="https://developers.facebook.com/docs/threads" target="_blank" style="font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.25rem;">Docs ↗</a></td>
+              </tr>
+              <tr onclick="showAppDetails(40)">
+                <td style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-muted);">40</td>
+                <td style="font-weight: 600;">SendGrid</td>
+                <td style="font-size: 0.85rem; color: var(--text-muted);">Marketing, Ads, Email and Social</td>
+                <td><span style="font-size: 0.85rem;">API Key, Bearer Token</span></td>
+                <td><span class="badge badge-self-serve">Self-serve</span></td>
+                <td><span class="badge badge-buildable">Buildable</span></td>
+                <td onclick="event.stopPropagation()"><a href="https://docs.sendgrid.com/api-reference/how-to-use-the-sendgrid-v3-api/authentication" target="_blank" style="font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.25rem;">Docs ↗</a></td>
+              </tr>
+              <tr onclick="showAppDetails(41)">
+                <td style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-muted);">41</td>
+                <td style="font-weight: 600;">Shopify</td>
+                <td style="font-size: 0.85rem; color: var(--text-muted);">Ecommerce</td>
+                <td><span style="font-size: 0.85rem;">OAuth2, API Key</span></td>
+                <td><span class="badge badge-self-serve">Self-serve</span></td>
+                <td><span class="badge badge-buildable">Buildable</span></td>
+                <td onclick="event.stopPropagation()"><a href="https://shopify.dev/docs/api" target="_blank" style="font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.25rem;">Docs ↗</a></td>
+              </tr>
+              <tr onclick="showAppDetails(42)">
+                <td style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-muted);">42</td>
+                <td style="font-weight: 600;">WooCommerce</td>
+                <td style="font-size: 0.85rem; color: var(--text-muted);">Ecommerce</td>
+                <td><span style="font-size: 0.85rem;">OAuth2, Basic</span></td>
+                <td><span class="badge badge-self-serve">Self-serve</span></td>
+                <td><span class="badge badge-buildable">Buildable</span></td>
+                <td onclick="event.stopPropagation()"><a href="https://woocommerce.com/document/woocommerce-rest-api/" target="_blank" style="font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.25rem;">Docs ↗</a></td>
+              </tr>
+              <tr onclick="showAppDetails(43)">
+                <td style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-muted);">43</td>
+                <td style="font-weight: 600;">BigCommerce</td>
+                <td style="font-size: 0.85rem; color: var(--text-muted);">Ecommerce</td>
+                <td><span style="font-size: 0.85rem;">OAuth2, Bearer Token</span></td>
+                <td><span class="badge badge-self-serve">Self-serve</span></td>
+                <td><span class="badge badge-buildable">Buildable</span></td>
+                <td onclick="event.stopPropagation()"><a href="https://developer.bigcommerce.com/docs" target="_blank" style="font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.25rem;">Docs ↗</a></td>
+              </tr>
+              <tr onclick="showAppDetails(44)">
+                <td style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-muted);">44</td>
+                <td style="font-weight: 600;">Salesforce Commerce Cloud</td>
+                <td style="font-size: 0.85rem; color: var(--text-muted);">Ecommerce</td>
+                <td><span style="font-size: 0.85rem;">OAuth2, Bearer Token</span></td>
+                <td><span class="badge badge-gated">Gated</span></td>
+                <td><span class="badge badge-gated-blocker">Gated Blocker</span></td>
+                <td onclick="event.stopPropagation()"><a href="https://developer.salesforce.com/docs/commerce" target="_blank" style="font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.25rem;">Docs ↗</a></td>
+              </tr>
+              <tr onclick="showAppDetails(45)">
+                <td style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-muted);">45</td>
+                <td style="font-weight: 600;">Magento (Adobe Commerce)</td>
+                <td style="font-size: 0.85rem; color: var(--text-muted);">Ecommerce</td>
+                <td><span style="font-size: 0.85rem;">OAuth2, Token, Bearer Token</span></td>
+                <td><span class="badge badge-self-serve">Self-serve</span></td>
+                <td><span class="badge badge-buildable">Buildable</span></td>
+                <td onclick="event.stopPropagation()"><a href="https://developer.adobe.com/commerce/webapi/" target="_blank" style="font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.25rem;">Docs ↗</a></td>
+              </tr>
+              <tr onclick="showAppDetails(46)">
+                <td style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-muted);">46</td>
+                <td style="font-weight: 600;">Squarespace</td>
+                <td style="font-size: 0.85rem; color: var(--text-muted);">Ecommerce</td>
+                <td><span style="font-size: 0.85rem;">API Key, OAuth2</span></td>
+                <td><span class="badge badge-self-serve">Self-serve</span></td>
+                <td><span class="badge badge-buildable">Buildable</span></td>
+                <td onclick="event.stopPropagation()"><a href="https://developers.squarespace.com/" target="_blank" style="font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.25rem;">Docs ↗</a></td>
+              </tr>
+              <tr onclick="showAppDetails(47)">
+                <td style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-muted);">47</td>
+                <td style="font-weight: 600;">Ecwid</td>
+                <td style="font-size: 0.85rem; color: var(--text-muted);">Ecommerce</td>
+                <td><span style="font-size: 0.85rem;">OAuth2, Bearer Token</span></td>
+                <td><span class="badge badge-self-serve">Self-serve</span></td>
+                <td><span class="badge badge-buildable">Buildable</span></td>
+                <td onclick="event.stopPropagation()"><a href="https://api-docs.ecwid.com/reference" target="_blank" style="font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.25rem;">Docs ↗</a></td>
+              </tr>
+              <tr onclick="showAppDetails(48)">
+                <td style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-muted);">48</td>
+                <td style="font-weight: 600;">Gumroad</td>
+                <td style="font-size: 0.85rem; color: var(--text-muted);">Ecommerce</td>
+                <td><span style="font-size: 0.85rem;">Token</span></td>
+                <td><span class="badge badge-self-serve">Self-serve</span></td>
+                <td><span class="badge badge-buildable">Buildable</span></td>
+                <td onclick="event.stopPropagation()"><a href="https://gumroad.com/api" target="_blank" style="font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.25rem;">Docs ↗</a></td>
+              </tr>
+              <tr onclick="showAppDetails(49)">
+                <td style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-muted);">49</td>
+                <td style="font-weight: 600;">Amazon Selling Partner</td>
+                <td style="font-size: 0.85rem; color: var(--text-muted);">Ecommerce</td>
+                <td><span style="font-size: 0.85rem;">OAuth2, Bearer Token</span></td>
+                <td><span class="badge badge-gated">Gated</span></td>
+                <td><span class="badge badge-medium-diff">Medium Difficulty</span></td>
+                <td onclick="event.stopPropagation()"><a href="https://developer-docs.amazon.com/sp-api" target="_blank" style="font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.25rem;">Docs ↗</a></td>
+              </tr>
+              <tr onclick="showAppDetails(50)">
+                <td style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-muted);">50</td>
+                <td style="font-weight: 600;">fanbasis</td>
+                <td style="font-size: 0.85rem; color: var(--text-muted);">Ecommerce</td>
+                <td><span style="font-size: 0.85rem;">None</span></td>
+                <td><span class="badge badge-gated">Gated</span></td>
+                <td><span class="badge badge-no-api">No API Blocker</span></td>
+                <td onclick="event.stopPropagation()"><a href="https://fanbasis.com/" target="_blank" style="font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.25rem;">Docs ↗</a></td>
+              </tr>
+              <tr onclick="showAppDetails(51)">
+                <td style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-muted);">51</td>
+                <td style="font-weight: 600;">DataForSEO</td>
+                <td style="font-size: 0.85rem; color: var(--text-muted);">Data, SEO and Scraping</td>
+                <td><span style="font-size: 0.85rem;">API Key</span></td>
+                <td><span class="badge badge-self-serve">Self-serve</span></td>
+                <td><span class="badge badge-buildable">Buildable</span></td>
+                <td onclick="event.stopPropagation()"><a href="https://docs.dataforseo.com/v3/getting-started/authentication/" target="_blank" style="font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.25rem;">Docs ↗</a></td>
+              </tr>
+              <tr onclick="showAppDetails(52)">
+                <td style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-muted);">52</td>
+                <td style="font-weight: 600;">SE Ranking</td>
+                <td style="font-size: 0.85rem; color: var(--text-muted);">Data, SEO and Scraping</td>
+                <td><span style="font-size: 0.85rem;">Token</span></td>
+                <td><span class="badge badge-gated">Gated</span></td>
+                <td><span class="badge badge-gated-blocker">Gated Blocker</span></td>
+                <td onclick="event.stopPropagation()"><a href="https://seranking.com/api.html" target="_blank" style="font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.25rem;">Docs ↗</a></td>
+              </tr>
+              <tr onclick="showAppDetails(53)">
+                <td style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-muted);">53</td>
+                <td style="font-weight: 600;">Ahrefs</td>
+                <td style="font-size: 0.85rem; color: var(--text-muted);">Data, SEO and Scraping</td>
+                <td><span style="font-size: 0.85rem;">API Key</span></td>
+                <td><span class="badge badge-gated">Gated</span></td>
+                <td><span class="badge badge-gated-blocker">Gated Blocker</span></td>
+                <td onclick="event.stopPropagation()"><a href="https://ahrefs.com/api" target="_blank" style="font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.25rem;">Docs ↗</a></td>
+              </tr>
+              <tr onclick="showAppDetails(54)">
+                <td style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-muted);">54</td>
+                <td style="font-weight: 600;">MrScraper</td>
+                <td style="font-size: 0.85rem; color: var(--text-muted);">Data, SEO and Scraping</td>
+                <td><span style="font-size: 0.85rem;">API Key</span></td>
+                <td><span class="badge badge-self-serve">Self-serve</span></td>
+                <td><span class="badge badge-buildable">Buildable</span></td>
+                <td onclick="event.stopPropagation()"><a href="https://docs.mrscraper.com/api-reference/authentication" target="_blank" style="font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.25rem;">Docs ↗</a></td>
+              </tr>
+              <tr onclick="showAppDetails(55)">
+                <td style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-muted);">55</td>
+                <td style="font-weight: 600;">Apify</td>
+                <td style="font-size: 0.85rem; color: var(--text-muted);">Data, SEO and Scraping</td>
+                <td><span style="font-size: 0.85rem;">API Key, Bearer Token</span></td>
+                <td><span class="badge badge-self-serve">Self-serve</span></td>
+                <td><span class="badge badge-buildable">Buildable</span></td>
+                <td onclick="event.stopPropagation()"><a href="https://docs.apify.com/api/v2" target="_blank" style="font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.25rem;">Docs ↗</a></td>
+              </tr>
+              <tr onclick="showAppDetails(56)">
+                <td style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-muted);">56</td>
+                <td style="font-weight: 600;">Firecrawl</td>
+                <td style="font-size: 0.85rem; color: var(--text-muted);">Data, SEO and Scraping</td>
+                <td><span style="font-size: 0.85rem;">API Key</span></td>
+                <td><span class="badge badge-self-serve">Self-serve</span></td>
+                <td><span class="badge badge-buildable">Buildable</span></td>
+                <td onclick="event.stopPropagation()"><a href="https://docs.firecrawl.dev/" target="_blank" style="font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.25rem;">Docs ↗</a></td>
+              </tr>
+              <tr onclick="showAppDetails(57)">
+                <td style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-muted);">57</td>
+                <td style="font-weight: 600;">Bright Data</td>
+                <td style="font-size: 0.85rem; color: var(--text-muted);">Data, SEO and Scraping</td>
+                <td><span style="font-size: 0.85rem;">API Key, Token</span></td>
+                <td><span class="badge badge-self-serve">Self-serve</span></td>
+                <td><span class="badge badge-buildable">Buildable</span></td>
+                <td onclick="event.stopPropagation()"><a href="https://docs.brightdata.com/api-reference/overview" target="_blank" style="font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.25rem;">Docs ↗</a></td>
+              </tr>
+              <tr onclick="showAppDetails(58)">
+                <td style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-muted);">58</td>
+                <td style="font-weight: 600;">Sherlock</td>
+                <td style="font-size: 0.85rem; color: var(--text-muted);">Data, SEO and Scraping</td>
+                <td><span style="font-size: 0.85rem;">None</span></td>
+                <td><span class="badge badge-self-serve">Self-serve</span></td>
+                <td><span class="badge badge-buildable">Buildable</span></td>
+                <td onclick="event.stopPropagation()"><a href="https://github.com/sherlock-project/sherlock" target="_blank" style="font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.25rem;">Docs ↗</a></td>
+              </tr>
+              <tr onclick="showAppDetails(59)">
+                <td style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-muted);">59</td>
+                <td style="font-weight: 600;">Waterfall.io</td>
+                <td style="font-size: 0.85rem; color: var(--text-muted);">Data, SEO and Scraping</td>
+                <td><span style="font-size: 0.85rem;">API Key</span></td>
+                <td><span class="badge badge-gated">Gated</span></td>
+                <td><span class="badge badge-no-api">No API Blocker</span></td>
+                <td onclick="event.stopPropagation()"><a href="https://www.waterfall.io/" target="_blank" style="font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.25rem;">Docs ↗</a></td>
+              </tr>
+              <tr onclick="showAppDetails(60)">
+                <td style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-muted);">60</td>
+                <td style="font-weight: 600;">Clay</td>
+                <td style="font-size: 0.85rem; color: var(--text-muted);">Data, SEO and Scraping</td>
+                <td><span style="font-size: 0.85rem;">API Key</span></td>
+                <td><span class="badge badge-gated">Gated</span></td>
+                <td><span class="badge badge-gated-blocker">Gated Blocker</span></td>
+                <td onclick="event.stopPropagation()"><a href="https://help.clay.com/en/articles/9327889-using-the-clay-api" target="_blank" style="font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.25rem;">Docs ↗</a></td>
+              </tr>
+              <tr onclick="showAppDetails(61)">
+                <td style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-muted);">61</td>
+                <td style="font-weight: 600;">GitHub</td>
+                <td style="font-size: 0.85rem; color: var(--text-muted);">Developer, Infra and Data platforms</td>
+                <td><span style="font-size: 0.85rem;">OAuth2, Bearer Token, Basic</span></td>
+                <td><span class="badge badge-self-serve">Self-serve</span></td>
+                <td><span class="badge badge-buildable">Buildable</span></td>
+                <td onclick="event.stopPropagation()"><a href="https://docs.github.com/rest" target="_blank" style="font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.25rem;">Docs ↗</a></td>
+              </tr>
+              <tr onclick="showAppDetails(62)">
+                <td style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-muted);">62</td>
+                <td style="font-weight: 600;">Vercel</td>
+                <td style="font-size: 0.85rem; color: var(--text-muted);">Developer, Infra and Data platforms</td>
+                <td><span style="font-size: 0.85rem;">Bearer Token, OAuth2</span></td>
+                <td><span class="badge badge-self-serve">Self-serve</span></td>
+                <td><span class="badge badge-buildable">Buildable</span></td>
+                <td onclick="event.stopPropagation()"><a href="https://vercel.com/docs/rest-api" target="_blank" style="font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.25rem;">Docs ↗</a></td>
+              </tr>
+              <tr onclick="showAppDetails(63)">
+                <td style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-muted);">63</td>
+                <td style="font-weight: 600;">Netlify</td>
+                <td style="font-size: 0.85rem; color: var(--text-muted);">Developer, Infra and Data platforms</td>
+                <td><span style="font-size: 0.85rem;">OAuth2, Bearer Token</span></td>
+                <td><span class="badge badge-self-serve">Self-serve</span></td>
+                <td><span class="badge badge-buildable">Buildable</span></td>
+                <td onclick="event.stopPropagation()"><a href="https://docs.netlify.com/api/" target="_blank" style="font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.25rem;">Docs ↗</a></td>
+              </tr>
+              <tr onclick="showAppDetails(64)">
+                <td style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-muted);">64</td>
+                <td style="font-weight: 600;">Cloudflare</td>
+                <td style="font-size: 0.85rem; color: var(--text-muted);">Developer, Infra and Data platforms</td>
+                <td><span style="font-size: 0.85rem;">API Key, Bearer Token</span></td>
+                <td><span class="badge badge-self-serve">Self-serve</span></td>
+                <td><span class="badge badge-buildable">Buildable</span></td>
+                <td onclick="event.stopPropagation()"><a href="https://developers.cloudflare.com/api/" target="_blank" style="font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.25rem;">Docs ↗</a></td>
+              </tr>
+              <tr onclick="showAppDetails(65)">
+                <td style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-muted);">65</td>
+                <td style="font-weight: 600;">Supabase</td>
+                <td style="font-size: 0.85rem; color: var(--text-muted);">Developer, Infra and Data platforms</td>
+                <td><span style="font-size: 0.85rem;">Token, API Key</span></td>
+                <td><span class="badge badge-self-serve">Self-serve</span></td>
+                <td><span class="badge badge-buildable">Buildable</span></td>
+                <td onclick="event.stopPropagation()"><a href="https://supabase.com/docs/reference/api/introduction" target="_blank" style="font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.25rem;">Docs ↗</a></td>
+              </tr>
+              <tr onclick="showAppDetails(66)">
+                <td style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-muted);">66</td>
+                <td style="font-weight: 600;">Neo4j</td>
+                <td style="font-size: 0.85rem; color: var(--text-muted);">Developer, Infra and Data platforms</td>
+                <td><span style="font-size: 0.85rem;">Basic, Bearer Token</span></td>
+                <td><span class="badge badge-self-serve">Self-serve</span></td>
+                <td><span class="badge badge-buildable">Buildable</span></td>
+                <td onclick="event.stopPropagation()"><a href="https://neo4j.com/docs/http-api/current/" target="_blank" style="font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.25rem;">Docs ↗</a></td>
+              </tr>
+              <tr onclick="showAppDetails(67)">
+                <td style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-muted);">67</td>
+                <td style="font-weight: 600;">Snowflake</td>
+                <td style="font-size: 0.85rem; color: var(--text-muted);">Developer, Infra and Data platforms</td>
+                <td><span style="font-size: 0.85rem;">OAuth2, Bearer Token, Basic</span></td>
+                <td><span class="badge badge-self-serve">Self-serve</span></td>
+                <td><span class="badge badge-buildable">Buildable</span></td>
+                <td onclick="event.stopPropagation()"><a href="https://docs.snowflake.com/en/developer-guide/sql-api/index" target="_blank" style="font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.25rem;">Docs ↗</a></td>
+              </tr>
+              <tr onclick="showAppDetails(68)">
+                <td style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-muted);">68</td>
+                <td style="font-weight: 600;">MongoDB Atlas</td>
+                <td style="font-size: 0.85rem; color: var(--text-muted);">Developer, Infra and Data platforms</td>
+                <td><span style="font-size: 0.85rem;">API Key, Digest Auth</span></td>
+                <td><span class="badge badge-self-serve">Self-serve</span></td>
+                <td><span class="badge badge-buildable">Buildable</span></td>
+                <td onclick="event.stopPropagation()"><a href="https://www.mongodb.com/docs/atlas/api/" target="_blank" style="font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.25rem;">Docs ↗</a></td>
+              </tr>
+              <tr onclick="showAppDetails(69)">
+                <td style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-muted);">69</td>
+                <td style="font-weight: 600;">Datadog</td>
+                <td style="font-size: 0.85rem; color: var(--text-muted);">Developer, Infra and Data platforms</td>
+                <td><span style="font-size: 0.85rem;">API Key, Bearer Token</span></td>
+                <td><span class="badge badge-self-serve">Self-serve</span></td>
+                <td><span class="badge badge-buildable">Buildable</span></td>
+                <td onclick="event.stopPropagation()"><a href="https://docs.datadoghq.com/api/latest/" target="_blank" style="font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.25rem;">Docs ↗</a></td>
+              </tr>
+              <tr onclick="showAppDetails(70)">
+                <td style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-muted);">70</td>
+                <td style="font-weight: 600;">Sentry</td>
+                <td style="font-size: 0.85rem; color: var(--text-muted);">Developer, Infra and Data platforms</td>
+                <td><span style="font-size: 0.85rem;">Bearer Token, OAuth2</span></td>
+                <td><span class="badge badge-self-serve">Self-serve</span></td>
+                <td><span class="badge badge-buildable">Buildable</span></td>
+                <td onclick="event.stopPropagation()"><a href="https://docs.sentry.io/api/" target="_blank" style="font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.25rem;">Docs ↗</a></td>
+              </tr>
+              <tr onclick="showAppDetails(71)">
+                <td style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-muted);">71</td>
+                <td style="font-weight: 600;">Notion</td>
+                <td style="font-size: 0.85rem; color: var(--text-muted);">Productivity and Project Management</td>
+                <td><span style="font-size: 0.85rem;">OAuth2, Bearer Token</span></td>
+                <td><span class="badge badge-self-serve">Self-serve</span></td>
+                <td><span class="badge badge-buildable">Buildable</span></td>
+                <td onclick="event.stopPropagation()"><a href="https://developers.notion.com/" target="_blank" style="font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.25rem;">Docs ↗</a></td>
+              </tr>
+              <tr onclick="showAppDetails(72)">
+                <td style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-muted);">72</td>
+                <td style="font-weight: 600;">Airtable</td>
+                <td style="font-size: 0.85rem; color: var(--text-muted);">Productivity and Project Management</td>
+                <td><span style="font-size: 0.85rem;">Bearer Token, OAuth2</span></td>
+                <td><span class="badge badge-self-serve">Self-serve</span></td>
+                <td><span class="badge badge-buildable">Buildable</span></td>
+                <td onclick="event.stopPropagation()"><a href="https://airtable.com/developers/web/api/introduction" target="_blank" style="font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.25rem;">Docs ↗</a></td>
+              </tr>
+              <tr onclick="showAppDetails(73)">
+                <td style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-muted);">73</td>
+                <td style="font-weight: 600;">Linear</td>
+                <td style="font-size: 0.85rem; color: var(--text-muted);">Productivity and Project Management</td>
+                <td><span style="font-size: 0.85rem;">OAuth2, Bearer Token</span></td>
+                <td><span class="badge badge-self-serve">Self-serve</span></td>
+                <td><span class="badge badge-buildable">Buildable</span></td>
+                <td onclick="event.stopPropagation()"><a href="https://developers.linear.app/" target="_blank" style="font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.25rem;">Docs ↗</a></td>
+              </tr>
+              <tr onclick="showAppDetails(74)">
+                <td style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-muted);">74</td>
+                <td style="font-weight: 600;">Jira</td>
+                <td style="font-size: 0.85rem; color: var(--text-muted);">Productivity and Project Management</td>
+                <td><span style="font-size: 0.85rem;">OAuth2, Bearer Token, Basic</span></td>
+                <td><span class="badge badge-self-serve">Self-serve</span></td>
+                <td><span class="badge badge-buildable">Buildable</span></td>
+                <td onclick="event.stopPropagation()"><a href="https://developer.atlassian.com/cloud/jira/platform/rest/v3/intro/" target="_blank" style="font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.25rem;">Docs ↗</a></td>
+              </tr>
+              <tr onclick="showAppDetails(75)">
+                <td style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-muted);">75</td>
+                <td style="font-weight: 600;">Asana</td>
+                <td style="font-size: 0.85rem; color: var(--text-muted);">Productivity and Project Management</td>
+                <td><span style="font-size: 0.85rem;">OAuth2, Bearer Token</span></td>
+                <td><span class="badge badge-self-serve">Self-serve</span></td>
+                <td><span class="badge badge-buildable">Buildable</span></td>
+                <td onclick="event.stopPropagation()"><a href="https://developers.asana.com/docs" target="_blank" style="font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.25rem;">Docs ↗</a></td>
+              </tr>
+              <tr onclick="showAppDetails(76)">
+                <td style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-muted);">76</td>
+                <td style="font-weight: 600;">Monday.com</td>
+                <td style="font-size: 0.85rem; color: var(--text-muted);">Productivity and Project Management</td>
+                <td><span style="font-size: 0.85rem;">OAuth2, API Key</span></td>
+                <td><span class="badge badge-self-serve">Self-serve</span></td>
+                <td><span class="badge badge-buildable">Buildable</span></td>
+                <td onclick="event.stopPropagation()"><a href="https://developer.monday.com/docs" target="_blank" style="font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.25rem;">Docs ↗</a></td>
+              </tr>
+              <tr onclick="showAppDetails(77)">
+                <td style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-muted);">77</td>
+                <td style="font-weight: 600;">ClickUp</td>
+                <td style="font-size: 0.85rem; color: var(--text-muted);">Productivity and Project Management</td>
+                <td><span style="font-size: 0.85rem;">OAuth2, API Key</span></td>
+                <td><span class="badge badge-self-serve">Self-serve</span></td>
+                <td><span class="badge badge-buildable">Buildable</span></td>
+                <td onclick="event.stopPropagation()"><a href="https://clickup.com/api" target="_blank" style="font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.25rem;">Docs ↗</a></td>
+              </tr>
+              <tr onclick="showAppDetails(78)">
+                <td style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-muted);">78</td>
+                <td style="font-weight: 600;">Coda</td>
+                <td style="font-size: 0.85rem; color: var(--text-muted);">Productivity and Project Management</td>
+                <td><span style="font-size: 0.85rem;">Bearer Token</span></td>
+                <td><span class="badge badge-self-serve">Self-serve</span></td>
+                <td><span class="badge badge-buildable">Buildable</span></td>
+                <td onclick="event.stopPropagation()"><a href="https://coda.io/developers/apis/v1" target="_blank" style="font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.25rem;">Docs ↗</a></td>
+              </tr>
+              <tr onclick="showAppDetails(79)">
+                <td style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-muted);">79</td>
+                <td style="font-weight: 600;">Smartsheet</td>
+                <td style="font-size: 0.85rem; color: var(--text-muted);">Productivity and Project Management</td>
+                <td><span style="font-size: 0.85rem;">OAuth2, Bearer Token</span></td>
+                <td><span class="badge badge-self-serve">Self-serve</span></td>
+                <td><span class="badge badge-buildable">Buildable</span></td>
+                <td onclick="event.stopPropagation()"><a href="https://smartsheet.redoc.ly/" target="_blank" style="font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.25rem;">Docs ↗</a></td>
+              </tr>
+              <tr onclick="showAppDetails(80)">
+                <td style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-muted);">80</td>
+                <td style="font-weight: 600;">Harvest</td>
+                <td style="font-size: 0.85rem; color: var(--text-muted);">Productivity and Project Management</td>
+                <td><span style="font-size: 0.85rem;">OAuth2, Bearer Token</span></td>
+                <td><span class="badge badge-self-serve">Self-serve</span></td>
+                <td><span class="badge badge-buildable">Buildable</span></td>
+                <td onclick="event.stopPropagation()"><a href="https://help.getharvest.com/api-v2/" target="_blank" style="font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.25rem;">Docs ↗</a></td>
+              </tr>
+              <tr onclick="showAppDetails(81)">
+                <td style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-muted);">81</td>
+                <td style="font-weight: 600;">Stripe</td>
+                <td style="font-size: 0.85rem; color: var(--text-muted);">Finance and Fintech</td>
+                <td><span style="font-size: 0.85rem;">Bearer Token, API Key</span></td>
+                <td><span class="badge badge-self-serve">Self-serve</span></td>
+                <td><span class="badge badge-buildable">Buildable</span></td>
+                <td onclick="event.stopPropagation()"><a href="https://stripe.com/docs/api" target="_blank" style="font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.25rem;">Docs ↗</a></td>
+              </tr>
+              <tr onclick="showAppDetails(82)">
+                <td style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-muted);">82</td>
+                <td style="font-weight: 600;">Plaid</td>
+                <td style="font-size: 0.85rem; color: var(--text-muted);">Finance and Fintech</td>
+                <td><span style="font-size: 0.85rem;">API Key, OAuth2</span></td>
+                <td><span class="badge badge-self-serve">Self-serve</span></td>
+                <td><span class="badge badge-buildable">Buildable</span></td>
+                <td onclick="event.stopPropagation()"><a href="https://plaid.com/docs/api/" target="_blank" style="font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.25rem;">Docs ↗</a></td>
+              </tr>
+              <tr onclick="showAppDetails(83)">
+                <td style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-muted);">83</td>
+                <td style="font-weight: 600;">Binance</td>
+                <td style="font-size: 0.85rem; color: var(--text-muted);">Finance and Fintech</td>
+                <td><span style="font-size: 0.85rem;">API Key</span></td>
+                <td><span class="badge badge-self-serve">Self-serve</span></td>
+                <td><span class="badge badge-buildable">Buildable</span></td>
+                <td onclick="event.stopPropagation()"><a href="https://binance-docs.github.io/apidocs/" target="_blank" style="font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.25rem;">Docs ↗</a></td>
+              </tr>
+              <tr onclick="showAppDetails(84)">
+                <td style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-muted);">84</td>
+                <td style="font-weight: 600;">Paygent Connect</td>
+                <td style="font-size: 0.85rem; color: var(--text-muted);">Finance and Fintech</td>
+                <td><span style="font-size: 0.85rem;">API Key</span></td>
+                <td><span class="badge badge-gated">Gated</span></td>
+                <td><span class="badge badge-gated-blocker">Gated Blocker</span></td>
+                <td onclick="event.stopPropagation()"><a href="https://www.paygent.co.jp/en/service/connect/" target="_blank" style="font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.25rem;">Docs ↗</a></td>
+              </tr>
+              <tr onclick="showAppDetails(85)">
+                <td style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-muted);">85</td>
+                <td style="font-weight: 600;">iPayX</td>
+                <td style="font-size: 0.85rem; color: var(--text-muted);">Finance and Fintech</td>
+                <td><span style="font-size: 0.85rem;">API Key, Bearer Token</span></td>
+                <td><span class="badge badge-gated">Gated</span></td>
+                <td><span class="badge badge-gated-blocker">Gated Blocker</span></td>
+                <td onclick="event.stopPropagation()"><a href="https://ipayx.ai/docs" target="_blank" style="font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.25rem;">Docs ↗</a></td>
+              </tr>
+              <tr onclick="showAppDetails(86)">
+                <td style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-muted);">86</td>
+                <td style="font-weight: 600;">QuickBooks</td>
+                <td style="font-size: 0.85rem; color: var(--text-muted);">Finance and Fintech</td>
+                <td><span style="font-size: 0.85rem;">OAuth2</span></td>
+                <td><span class="badge badge-self-serve">Self-serve</span></td>
+                <td><span class="badge badge-buildable">Buildable</span></td>
+                <td onclick="event.stopPropagation()"><a href="https://developer.intuit.com/" target="_blank" style="font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.25rem;">Docs ↗</a></td>
+              </tr>
+              <tr onclick="showAppDetails(87)">
+                <td style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-muted);">87</td>
+                <td style="font-weight: 600;">Xero</td>
+                <td style="font-size: 0.85rem; color: var(--text-muted);">Finance and Fintech</td>
+                <td><span style="font-size: 0.85rem;">OAuth2</span></td>
+                <td><span class="badge badge-self-serve">Self-serve</span></td>
+                <td><span class="badge badge-buildable">Buildable</span></td>
+                <td onclick="event.stopPropagation()"><a href="https://developer.xero.com/" target="_blank" style="font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.25rem;">Docs ↗</a></td>
+              </tr>
+              <tr onclick="showAppDetails(88)">
+                <td style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-muted);">88</td>
+                <td style="font-weight: 600;">Brex</td>
+                <td style="font-size: 0.85rem; color: var(--text-muted);">Finance and Fintech</td>
+                <td><span style="font-size: 0.85rem;">OAuth2</span></td>
+                <td><span class="badge badge-gated">Gated</span></td>
+                <td><span class="badge badge-gated-blocker">Gated Blocker</span></td>
+                <td onclick="event.stopPropagation()"><a href="https://developer.brex.com/openapi/" target="_blank" style="font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.25rem;">Docs ↗</a></td>
+              </tr>
+              <tr onclick="showAppDetails(89)">
+                <td style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-muted);">89</td>
+                <td style="font-weight: 600;">Ramp</td>
+                <td style="font-size: 0.85rem; color: var(--text-muted);">Finance and Fintech</td>
+                <td><span style="font-size: 0.85rem;">Bearer Token</span></td>
+                <td><span class="badge badge-gated">Gated</span></td>
+                <td><span class="badge badge-gated-blocker">Gated Blocker</span></td>
+                <td onclick="event.stopPropagation()"><a href="https://docs.ramp.com/developers" target="_blank" style="font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.25rem;">Docs ↗</a></td>
+              </tr>
+              <tr onclick="showAppDetails(90)">
+                <td style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-muted);">90</td>
+                <td style="font-weight: 600;">PitchBook</td>
+                <td style="font-size: 0.85rem; color: var(--text-muted);">Finance and Fintech</td>
+                <td><span style="font-size: 0.85rem;">API Key</span></td>
+                <td><span class="badge badge-gated">Gated</span></td>
+                <td><span class="badge badge-gated-blocker">Gated Blocker</span></td>
+                <td onclick="event.stopPropagation()"><a href="https://pitchbook.com/help/api" target="_blank" style="font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.25rem;">Docs ↗</a></td>
+              </tr>
+              <tr onclick="showAppDetails(91)">
+                <td style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-muted);">91</td>
+                <td style="font-weight: 600;">NotebookLM</td>
+                <td style="font-size: 0.85rem; color: var(--text-muted);">AI, Research and Media-native</td>
+                <td><span style="font-size: 0.85rem;">API Key</span></td>
+                <td><span class="badge badge-gated">Gated</span></td>
+                <td><span class="badge badge-no-api">No API Blocker</span></td>
+                <td onclick="event.stopPropagation()"><a href="https://notebooklm.google.com/" target="_blank" style="font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.25rem;">Docs ↗</a></td>
+              </tr>
+              <tr onclick="showAppDetails(92)">
+                <td style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-muted);">92</td>
+                <td style="font-weight: 600;">Otter AI</td>
+                <td style="font-size: 0.85rem; color: var(--text-muted);">AI, Research and Media-native</td>
+                <td><span style="font-size: 0.85rem;">Token</span></td>
+                <td><span class="badge badge-gated">Gated</span></td>
+                <td><span class="badge badge-no-api">No API Blocker</span></td>
+                <td onclick="event.stopPropagation()"><a href="https://otter.ai/integrations" target="_blank" style="font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.25rem;">Docs ↗</a></td>
+              </tr>
+              <tr onclick="showAppDetails(93)">
+                <td style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-muted);">93</td>
+                <td style="font-weight: 600;">Fathom</td>
+                <td style="font-size: 0.85rem; color: var(--text-muted);">AI, Research and Media-native</td>
+                <td><span style="font-size: 0.85rem;">None</span></td>
+                <td><span class="badge badge-gated">Gated</span></td>
+                <td><span class="badge badge-no-api">No API Blocker</span></td>
+                <td onclick="event.stopPropagation()"><a href="https://fathom.video/integrations" target="_blank" style="font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.25rem;">Docs ↗</a></td>
+              </tr>
+              <tr onclick="showAppDetails(94)">
+                <td style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-muted);">94</td>
+                <td style="font-weight: 600;">Consensus</td>
+                <td style="font-size: 0.85rem; color: var(--text-muted);">AI, Research and Media-native</td>
+                <td><span style="font-size: 0.85rem;">API Key</span></td>
+                <td><span class="badge badge-gated">Gated</span></td>
+                <td><span class="badge badge-gated-blocker">Gated Blocker</span></td>
+                <td onclick="event.stopPropagation()"><a href="https://consensus.app/developers/" target="_blank" style="font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.25rem;">Docs ↗</a></td>
+              </tr>
+              <tr onclick="showAppDetails(95)">
+                <td style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-muted);">95</td>
+                <td style="font-weight: 600;">Reducto</td>
+                <td style="font-size: 0.85rem; color: var(--text-muted);">AI, Research and Media-native</td>
+                <td><span style="font-size: 0.85rem;">API Key</span></td>
+                <td><span class="badge badge-self-serve">Self-serve</span></td>
+                <td><span class="badge badge-buildable">Buildable</span></td>
+                <td onclick="event.stopPropagation()"><a href="https://docs.reducto.ai/" target="_blank" style="font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.25rem;">Docs ↗</a></td>
+              </tr>
+              <tr onclick="showAppDetails(96)">
+                <td style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-muted);">96</td>
+                <td style="font-weight: 600;">Devin</td>
+                <td style="font-size: 0.85rem; color: var(--text-muted);">AI, Research and Media-native</td>
+                <td><span style="font-size: 0.85rem;">API Key</span></td>
+                <td><span class="badge badge-gated">Gated</span></td>
+                <td><span class="badge badge-no-api">No API Blocker</span></td>
+                <td onclick="event.stopPropagation()"><a href="https://www.devin.ai/" target="_blank" style="font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.25rem;">Docs ↗</a></td>
+              </tr>
+              <tr onclick="showAppDetails(97)">
+                <td style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-muted);">97</td>
+                <td style="font-weight: 600;">higgsfield</td>
+                <td style="font-size: 0.85rem; color: var(--text-muted);">AI, Research and Media-native</td>
+                <td><span style="font-size: 0.85rem;">None</span></td>
+                <td><span class="badge badge-gated">Gated</span></td>
+                <td><span class="badge badge-no-api">No API Blocker</span></td>
+                <td onclick="event.stopPropagation()"><a href="https://higgsfield.ai/" target="_blank" style="font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.25rem;">Docs ↗</a></td>
+              </tr>
+              <tr onclick="showAppDetails(98)">
+                <td style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-muted);">98</td>
+                <td style="font-weight: 600;">Mermaid CLI</td>
+                <td style="font-size: 0.85rem; color: var(--text-muted);">AI, Research and Media-native</td>
+                <td><span style="font-size: 0.85rem;">None</span></td>
+                <td><span class="badge badge-self-serve">Self-serve</span></td>
+                <td><span class="badge badge-buildable">Buildable</span></td>
+                <td onclick="event.stopPropagation()"><a href="https://github.com/mermaid-js/mermaid-cli" target="_blank" style="font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.25rem;">Docs ↗</a></td>
+              </tr>
+              <tr onclick="showAppDetails(99)">
+                <td style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-muted);">99</td>
+                <td style="font-weight: 600;">YouTube Transcript</td>
+                <td style="font-size: 0.85rem; color: var(--text-muted);">AI, Research and Media-native</td>
+                <td><span style="font-size: 0.85rem;">API Key</span></td>
+                <td><span class="badge badge-self-serve">Self-serve</span></td>
+                <td><span class="badge badge-buildable">Buildable</span></td>
+                <td onclick="event.stopPropagation()"><a href="https://transcriptapi.com/docs" target="_blank" style="font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.25rem;">Docs ↗</a></td>
+              </tr>
+              <tr onclick="showAppDetails(100)">
+                <td style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-muted);">100</td>
+                <td style="font-weight: 600;">Grain</td>
+                <td style="font-size: 0.85rem; color: var(--text-muted);">AI, Research and Media-native</td>
+                <td><span style="font-size: 0.85rem;">OAuth2</span></td>
+                <td><span class="badge badge-gated">Gated</span></td>
+                <td><span class="badge badge-medium-diff">Medium Difficulty</span></td>
+                <td onclick="event.stopPropagation()"><a href="https://developers.grain.com/" target="_blank" style="font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.25rem;">Docs ↗</a></td>
+              </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Tab 3: Agent & Verification -->
+    <div id="tab-agent" class="tab-content">
+      <div class="dashboard-layout">
+        <!-- Agent Section -->
+        <div class="card">
+          <div class="card-title">The Agent Architecture & Workflow</div>
+          <div class="arch-flow">
+            <div class="arch-step">
+              <div class="arch-step-num">1</div>
+              <div class="arch-step-content">
+                <h3>Read & Parse Definitions</h3>
+                <p>Loads 100 app payloads from data/apps.json including hint URLs and categories.</p>
+              </div>
+            </div>
+            <div class="arch-step">
+              <div class="arch-step-num">2</div>
+              <div class="arch-step-content">
+                <h3>AI Research Agent (Gemini API)</h3>
+                <p>Queries gemini-3.1-flash-lite in rate-limited batches with custom prompts defining JSON schemas for auth mechanisms, gating policies, blockers, and docs.</p>
+              </div>
+            </div>
+            <div class="arch-step">
+              <div class="arch-step-num">3</div>
+              <div class="arch-step-content">
+                <h3>Verification Loop & Human Checks</h3>
+                <p>Compares a 12-app sample against manual ground truths, calculating first-pass accuracy and outputting correcting records.</p>
+              </div>
+            </div>
+            <div class="arch-step">
+              <div class="arch-step-num">4</div>
+              <div class="arch-step-content">
+                <h3>Sanitization & UI Compilation</h3>
+                <p>Performs integrity checks (e.g. self-serve alignment, standardized auth namings) and outputs the final case study dashboard.</p>
+              </div>
+            </div>
+          </div>
+          
+          <div style="font-size: 0.9rem; margin-top: 1.5rem;">
+            <p><strong>Where a Human Was Needed:</strong> For highly obscure integrations (e.g. <i>Paygent Connect</i>, <i>iPayX</i>, <i>fanbasis</i>), human intervention was required to establish ground truths and inspect NMI-related developer platforms to cross-check findings.</p>
+          </div>
+        </div>
+
+        <!-- Verification Section -->
+        <div class="card">
+          <div class="card-title">Verification Transparency Hub</div>
+          <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 1rem;">
+            We cross-checked a diverse, random sample of 12 apps (representing 12% of the dataset) to compute the agent's baseline accuracy and track the improvement progression.
+          </p>
+          
+          <div class="stats-grid" style="grid-template-columns: 1fr 1fr; margin-bottom: 1.5rem;">
+            <div style="background: rgba(0,0,0,0.15); padding: 1rem; border-radius: 12px; border: 1px solid var(--border-color); text-align: center;">
+              <div style="font-size: 0.8rem; text-transform: uppercase; color: var(--text-muted);">First-Pass Field Accuracy</div>
+              <div style="font-size: 1.8rem; font-weight: 700; color: var(--accent-rose);">91.67%</div>
+              <div style="font-size: 0.75rem; color: var(--text-muted);">66/72 fields correct</div>
+            </div>
+            <div style="background: rgba(0,0,0,0.15); padding: 1rem; border-radius: 12px; border: 1px solid var(--border-color); text-align: center;">
+              <div style="font-size: 0.8rem; text-transform: uppercase; color: var(--text-muted);">Final Sample Accuracy</div>
+              <div style="font-size: 1.8rem; font-weight: 700; color: var(--accent-emerald);">100.00%</div>
+              <div style="font-size: 0.75rem; color: var(--text-muted);">Post-verification loop aligned</div>
+            </div>
+          </div>
+
+          <p style="font-size: 0.85rem; font-weight: 600; margin-bottom: 0.5rem;">Sample of Corrected Errors during Verification Loop:</p>
+          <div style="overflow-x: auto;">
+            <table class="comparison-table">
+              <thead>
+                <tr>
+                  <th>App (ID)</th>
+                  <th>Field</th>
+                  <th>First-Pass Agent Response</th>
+                  <th>Ground Truth Correction</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="font-weight:600;">DealCloud (10)</td>
+                  <td>Verdict</td>
+                  <td><span class="text-diff-del">Buildable</span></td>
+                  <td><span class="text-diff-add">Gated Blocker</span> (Enterprise Partner only)</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:600;">fanbasis (50)</td>
+                  <td>Access</td>
+                  <td><span class="text-diff-del">Self-serve</span></td>
+                  <td><span class="text-diff-add">Gated</span> (No public API exists)</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:600;">Paygent Connect (84)</td>
+                  <td>Access</td>
+                  <td><span class="text-diff-del">Self-serve</span></td>
+                  <td><span class="text-diff-add">Gated</span> (NMI-powered enterprise account)</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:600;">Otter AI (92)</td>
+                  <td>Verdict</td>
+                  <td><span class="text-diff-del">Buildable</span></td>
+                  <td><span class="text-diff-add">Gated Blocker</span> (Gated behind enterprise partnership)</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- How to Run -->
+      <div class="card">
+        <div class="card-title">How to Run & Verify the Source Code</div>
+        <p style="font-size: 0.9rem; margin-bottom: 1rem;">The research agent pipeline and source repo are hosted in the workspace. You can replicate this report or run additional analysis using these commands:</p>
+        
+        <div class="code-block">
+# Clone the repository
+git clone https://github.com/cloud-composio/app-research-agent.git
+cd app-research-agent
+
+# Install dependencies (Node.js 18+ required, uses native fetch)
+npm install
+
+# Run the research agent to generate raw_results.json
+npm run research
+
+# Run the verification loop and clean up findings
+npm run verify
+
+# Generate this HTML page in the dist/ folder
+npm run ui
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Detail Drawer Panel -->
+  <div class="drawer-overlay" id="drawer-overlay" onclick="closeAppDetails()"></div>
+  <div class="drawer" id="app-drawer">
+    <button class="drawer-close" onclick="closeAppDetails()">×</button>
+    <div id="drawer-content">
+      <!-- Injected by JavaScript -->
+    </div>
+  </div>
+
+  <script>
+    const appsData = [{"id":1,"name":"Salesforce","category":"CRM and Sales","oneLineDescription":"A cloud-based CRM platform that manages customer relationships, sales processes, and marketing automation.","authMethods":["OAuth2","Bearer Token"],"accessType":"Self-serve","gatingDetails":"Developers can sign up for a free Salesforce Developer Edition account to access the API immediately.","apiSurface":"REST, GraphQL, SOAP","apiBreadth":"Broad","existingMcp":true,"buildabilityVerdict":"Buildable","mainBlocker":"None","evidenceUrl":"https://developer.salesforce.com/docs"},{"id":2,"name":"HubSpot","category":"CRM and Sales","oneLineDescription":"A comprehensive CRM platform that provides tools for marketing, sales, content management, and customer service.","authMethods":["OAuth2","API Key"],"accessType":"Self-serve","gatingDetails":"Developers can sign up for a free developer portal to create test accounts and obtain credentials immediately.","apiSurface":"REST, GraphQL","apiBreadth":"Broad","existingMcp":true,"buildabilityVerdict":"Buildable","mainBlocker":"None","evidenceUrl":"https://developers.hubspot.com/docs/api/overview"},{"id":3,"name":"Pipedrive","category":"CRM and Sales","oneLineDescription":"A web-based Sales CRM and pipeline management software designed to help sales teams manage leads and deals.","authMethods":["OAuth2","API Key"],"accessType":"Self-serve","gatingDetails":"Developers can sign up for a trial or use a standard account to generate API tokens in the settings panel; no enterprise gate.","apiSurface":"REST","apiBreadth":"Broad","existingMcp":false,"buildabilityVerdict":"Buildable","mainBlocker":"None","evidenceUrl":"https://developers.pipedrive.com/"},{"id":4,"name":"Attio","category":"CRM and Sales","oneLineDescription":"A next-generation CRM platform that offers highly customizable data structures and powerful automation capabilities.","authMethods":["OAuth2","API Key"],"accessType":"Self-serve","gatingDetails":"Developers can generate API keys directly through the workspace settings in the Attio dashboard without needing to contact sales.","apiSurface":"REST, GraphQL","apiBreadth":"Broad","existingMcp":false,"buildabilityVerdict":"Buildable","mainBlocker":"None","evidenceUrl":"https://developers.attio.com/"},{"id":5,"name":"Twenty","category":"CRM and Sales","oneLineDescription":"An open-source, modern CRM platform that allows for complete data ownership and custom integrations.","authMethods":["Bearer Token","API Key"],"accessType":"Self-serve","gatingDetails":"Developers can generate Personal Access Tokens directly via the user interface within their Twenty instance.","apiSurface":"GraphQL","apiBreadth":"Broad","existingMcp":false,"buildabilityVerdict":"Buildable","mainBlocker":"None","evidenceUrl":"https://docs.twenty.com/developers/api/introduction"},{"id":6,"name":"Podio","category":"CRM and Sales","oneLineDescription":"A flexible work management and collaboration platform that allows users to build custom apps and workspaces for project tracking and CRM.","authMethods":["OAuth2"],"accessType":"Self-serve","gatingDetails":"Developers can register applications and obtain API credentials via the Podio Developer portal without needing prior approval.","apiSurface":"REST","apiBreadth":"Broad","existingMcp":false,"buildabilityVerdict":"Buildable","mainBlocker":"None","evidenceUrl":"https://developers.podio.com/"},{"id":7,"name":"Zoho CRM","category":"CRM and Sales","oneLineDescription":"A comprehensive customer relationship management platform that provides tools for sales force automation, marketing, and customer support.","authMethods":["OAuth2"],"accessType":"Self-serve","gatingDetails":"Developers can sign up for a free developer account at the Zoho Developer Console to register applications and obtain OAuth2 credentials.","apiSurface":"REST","apiBreadth":"Broad","existingMcp":false,"buildabilityVerdict":"Buildable","mainBlocker":"None","evidenceUrl":"https://www.zoho.com/crm/developer/docs/api/v3/"},{"id":8,"name":"Close","category":"CRM and Sales","oneLineDescription":"A high-velocity CRM built for sales teams that includes integrated calling, SMS, and email automation.","authMethods":["API Key"],"accessType":"Self-serve","gatingDetails":"API keys can be generated instantly within the user settings of any Close account.","apiSurface":"REST","apiBreadth":"Broad","existingMcp":false,"buildabilityVerdict":"Buildable","mainBlocker":"None","evidenceUrl":"https://developer.close.com/"},{"id":9,"name":"Copper","category":"CRM and Sales","oneLineDescription":"A relationship-focused CRM that integrates directly into Google Workspace.","authMethods":["API Key"],"accessType":"Gated","gatingDetails":"API access is restricted to Professional and Business plan subscriptions.","apiSurface":"REST","apiBreadth":"Broad","existingMcp":false,"buildabilityVerdict":"Gated Blocker","mainBlocker":"Requires a paid subscription (Professional or Business plan) to generate API keys.","evidenceUrl":"https://developer.copper.com/api-getting-started.html"},{"id":10,"name":"DealCloud","category":"CRM and Sales","oneLineDescription":"A specialized CRM and deal management platform for financial services and private capital markets.","authMethods":["OAuth2","Token"],"accessType":"Gated","gatingDetails":"Access to the API requires an active enterprise subscription and specific credentials generated or managed by an administrator within the platform's client settings.","apiSurface":"REST","apiBreadth":"Broad","existingMcp":false,"buildabilityVerdict":"Gated Blocker","mainBlocker":"Requires partner or enterprise client credentials","evidenceUrl":"https://api.docs.dealcloud.com"},{"id":11,"name":"Zendesk","category":"Support and Helpdesk","oneLineDescription":"A customer service software platform that provides helpdesk, ticket management, and omnichannel support tools.","authMethods":["OAuth2","API Key","Basic","Token"],"accessType":"Self-serve","gatingDetails":"Developers can sign up for a free Zendesk trial or use an existing account to generate API tokens or OAuth clients via the Admin Center.","apiSurface":"REST","apiBreadth":"Broad","existingMcp":true,"buildabilityVerdict":"Buildable","mainBlocker":"None","evidenceUrl":"https://developer.zendesk.com/api-reference/"},{"id":12,"name":"Intercom","category":"Support and Helpdesk","oneLineDescription":"A customer service platform that combines live chat, ticketing, and proactive support tools for businesses.","authMethods":["OAuth2","Bearer Token"],"accessType":"Self-serve","gatingDetails":"Developers can create an Intercom account and access the Developer Hub to create apps and generate access tokens without contacting sales.","apiSurface":"REST","apiBreadth":"Broad","existingMcp":false,"buildabilityVerdict":"Buildable","mainBlocker":"None","evidenceUrl":"https://developers.intercom.com/"},{"id":13,"name":"Freshdesk","category":"Support and Helpdesk","oneLineDescription":"A cloud-based customer support software that helps businesses manage support tickets, knowledge bases, and multi-channel communication.","authMethods":["API Key","Basic","OAuth2"],"accessType":"Self-serve","gatingDetails":"Developers can generate an API key directly from their profile settings in any Freshdesk account (including trial accounts).","apiSurface":"REST","apiBreadth":"Broad","existingMcp":false,"buildabilityVerdict":"Buildable","mainBlocker":"None","evidenceUrl":"https://developers.freshdesk.com/api/"},{"id":14,"name":"Front","category":"Support and Helpdesk","oneLineDescription":"A customer operations platform that centralizes email, chat, and other communication channels into a collaborative shared inbox.","authMethods":["OAuth2","Bearer Token"],"accessType":"Self-serve","gatingDetails":"Developers can generate API tokens or set up OAuth apps directly from the Front dashboard settings without needing enterprise approval.","apiSurface":"REST","apiBreadth":"Broad","existingMcp":false,"buildabilityVerdict":"Buildable","mainBlocker":"None","evidenceUrl":"https://dev.frontapp.com/"},{"id":15,"name":"Pylon","category":"Support and Helpdesk","oneLineDescription":"A customer support platform for B2B companies that unifies tickets, Slack, and email into a single interface.","authMethods":["API Key"],"accessType":"Self-serve","gatingDetails":"API access requires an Enterprise plan and manual approval from the Pylon team; contact sales for access.","apiSurface":"REST","apiBreadth":"Medium","existingMcp":false,"buildabilityVerdict":"Buildable","mainBlocker":"None","evidenceUrl":"https://docs.usepylon.com/api-reference"},{"id":16,"name":"LiveAgent","category":"Support and Helpdesk","oneLineDescription":"A multi-channel helpdesk software that centralizes customer communication across email, chat, social media, and phone.","authMethods":["API Key"],"accessType":"Self-serve","gatingDetails":"API access is available to users; API keys are generated within the LiveAgent agent dashboard under Configuration > API.","apiSurface":"REST","apiBreadth":"Broad","existingMcp":false,"buildabilityVerdict":"Buildable","mainBlocker":"None","evidenceUrl":"https://www.liveagent.com/docs/api/"},{"id":17,"name":"Plain","category":"Support and Helpdesk","oneLineDescription":"A modern customer support platform that provides a customer support infrastructure, ticketing system, and customer profiles for businesses.","authMethods":["Bearer Token"],"accessType":"Self-serve","gatingDetails":"Developers can generate API keys directly from the Plain dashboard under settings after creating a free or paid workspace.","apiSurface":"GraphQL","apiBreadth":"Broad","existingMcp":false,"buildabilityVerdict":"Buildable","mainBlocker":"None","evidenceUrl":"https://www.plain.com/docs/api"},{"id":18,"name":"Help Scout","category":"Support and Helpdesk","oneLineDescription":"A customer support platform that provides shared inboxes, knowledge base tools, and reporting features for customer service teams.","authMethods":["OAuth2","API Key"],"accessType":"Self-serve","gatingDetails":"Developers can create a Help Scout account and generate API keys or register OAuth apps within the 'Manage Apps' section of their account settings without enterprise approval.","apiSurface":"REST","apiBreadth":"Broad","existingMcp":false,"buildabilityVerdict":"Buildable","mainBlocker":"None","evidenceUrl":"https://developer.helpscout.com/mailbox-api/"},{"id":19,"name":"Gorgias","category":"Support and Helpdesk","oneLineDescription":"A customer service helpdesk platform for e-commerce stores that centralizes support tickets and integrates with platforms like Shopify.","authMethods":["Bearer Token","OAuth2"],"accessType":"Self-serve","gatingDetails":"Developers can generate API keys directly from the Gorgias dashboard settings once signed up for an account.","apiSurface":"REST","apiBreadth":"Broad","existingMcp":false,"buildabilityVerdict":"Buildable","mainBlocker":"None","evidenceUrl":"https://developers.gorgias.com/"},{"id":20,"name":"Gladly","category":"Support and Helpdesk","oneLineDescription":"A customer service platform designed for people-centered, conversation-based support experiences.","authMethods":["Bearer Token","Basic"],"accessType":"Gated","gatingDetails":"API access requires an active Gladly account; typically requires contacting sales or support to enable API access for your instance and obtain credentials.","apiSurface":"REST","apiBreadth":"Broad","existingMcp":false,"buildabilityVerdict":"Gated Blocker","mainBlocker":"Requires contact with sales or account support to enable API access; no public self-serve developer sandbox registration.","evidenceUrl":"https://developer.gladly.com/rest/"},{"id":21,"name":"Slack","category":"Communications and Messaging","oneLineDescription":"A channel-based messaging platform for professional team collaboration and integration workflows.","authMethods":["OAuth2","Bearer Token"],"accessType":"Self-serve","gatingDetails":"Developers can create Slack apps for free via the Slack API dashboard; no enterprise plan required for basic development.","apiSurface":"REST","apiBreadth":"Broad","existingMcp":true,"buildabilityVerdict":"Buildable","mainBlocker":"None","evidenceUrl":"https://api.slack.com/"},{"id":22,"name":"Twilio","category":"Communications and Messaging","oneLineDescription":"Cloud communications platform for building SMS, voice, video, and messaging applications via programmable APIs.","authMethods":["API Key","Basic","Bearer Token"],"accessType":"Self-serve","gatingDetails":"Developers can sign up for a free trial account and generate API credentials instantly without manual approval or sales contact.","apiSurface":"REST","apiBreadth":"Broad","existingMcp":true,"buildabilityVerdict":"Buildable","mainBlocker":"None","evidenceUrl":"https://www.twilio.com/docs"},{"id":23,"name":"Zoho Cliq","category":"Communications and Messaging","oneLineDescription":"A team collaboration platform offering messaging, audio/video calling, and workflow automation through extensions and integrations.","authMethods":["OAuth2","Bearer Token"],"accessType":"Self-serve","gatingDetails":"Developers can register via the Zoho Developer Console to create self-serve applications for their own organization or to publish to the marketplace.","apiSurface":"REST","apiBreadth":"Broad","existingMcp":false,"buildabilityVerdict":"Buildable","mainBlocker":"None","evidenceUrl":"https://www.zoho.com/cliq/help/rest-api/api-reference.html"},{"id":24,"name":"Lark (Larksuite)","category":"Communications and Messaging","oneLineDescription":"An all-in-one collaboration suite integrating chat, calendar, document editing, and project management.","authMethods":["OAuth2","App Access Token"],"accessType":"Self-serve","gatingDetails":"Developers can create a Lark Developer account for free and manage custom apps via the Developer Console.","apiSurface":"REST","apiBreadth":"Broad","existingMcp":false,"buildabilityVerdict":"Buildable","mainBlocker":"None","evidenceUrl":"https://open.larksuite.com/document/home/index"},{"id":25,"name":"Pumble","category":"Communications and Messaging","oneLineDescription":"A team communication and collaboration platform featuring messaging, audio/video calls, and file sharing.","authMethods":["OAuth2","Bearer Token"],"accessType":"Self-serve","gatingDetails":"Users can generate API tokens and manage integrations directly through the workspace settings in the Pumble web app.","apiSurface":"REST","apiBreadth":"Medium","existingMcp":false,"buildabilityVerdict":"Buildable","mainBlocker":"None","evidenceUrl":"https://pumble.com/help/integrations/pumble-api/"},{"id":26,"name":"Discord","category":"Communications and Messaging","oneLineDescription":"A platform for group communication via text, voice, and video, organized into servers and channels.","authMethods":["OAuth2","Bearer Token"],"accessType":"Self-serve","gatingDetails":"Developers can create applications via the Discord Developer Portal immediately without approval or cost.","apiSurface":"REST, Gateway (WebSocket)","apiBreadth":"Broad","existingMcp":true,"buildabilityVerdict":"Buildable","mainBlocker":"None","evidenceUrl":"https://discord.com/developers/docs"},{"id":27,"name":"Telegram","category":"Communications and Messaging","oneLineDescription":"A cloud-based instant messaging service with a robust API for building bots and custom client applications.","authMethods":["API Key","Bearer Token"],"accessType":"Self-serve","gatingDetails":"Developers can create bots instantly via BotFather inside the Telegram app and receive an API token immediately for free.","apiSurface":"REST, gRPC","apiBreadth":"Broad","existingMcp":false,"buildabilityVerdict":"Buildable","mainBlocker":"None","evidenceUrl":"https://core.telegram.org/api"},{"id":28,"name":"WhatsApp Business","category":"Communications and Messaging","oneLineDescription":"The WhatsApp Business Platform allows businesses to communicate with customers at scale using the official WhatsApp API.","authMethods":["Token"],"accessType":"Self-serve","gatingDetails":"Requires a Meta for Developers account, setup of a Meta Business Account, and phone number verification, but is accessible via self-serve developer portal.","apiSurface":"REST","apiBreadth":"Broad","existingMcp":true,"buildabilityVerdict":"Buildable","mainBlocker":"None","evidenceUrl":"https://developers.facebook.com/docs/whatsapp"},{"id":29,"name":"Aircall","category":"Communications and Messaging","oneLineDescription":"Cloud-based phone system and call center software that integrates with CRM and helpdesk tools.","authMethods":["API Key","Bearer Token","Basic"],"accessType":"Self-serve","gatingDetails":"Developers can create an Aircall account and generate API credentials via the dashboard without manual approval.","apiSurface":"REST","apiBreadth":"Broad","existingMcp":false,"buildabilityVerdict":"Buildable","mainBlocker":"None","evidenceUrl":"https://developer.aircall.io/"},{"id":30,"name":"Vonage","category":"Communications and Messaging","oneLineDescription":"Cloud communications platform providing APIs for SMS, voice, video, messaging, and authentication.","authMethods":["API Key","Bearer Token","Basic"],"accessType":"Self-serve","gatingDetails":"Free developer account with instant access to API keys and credit upon signup.","apiSurface":"REST","apiBreadth":"Broad","existingMcp":false,"buildabilityVerdict":"Buildable","mainBlocker":"None","evidenceUrl":"https://developer.vonage.com/en/api"},{"id":31,"name":"Google Ads","category":"Marketing, Ads, Email and Social","oneLineDescription":"A comprehensive advertising platform that allows businesses to display ads, service offerings, and product listings across Google's search and display networks.","authMethods":["OAuth2"],"accessType":"Self-serve","gatingDetails":"Self-serve access to the Google Ads API via the Google Cloud Console, requiring a developer token and an active Google Ads account.","apiSurface":"REST, gRPC","apiBreadth":"Broad","existingMcp":false,"buildabilityVerdict":"Buildable","mainBlocker":"None","evidenceUrl":"https://developers.google.com/google-ads/api/docs/start"},{"id":32,"name":"Meta Ads","category":"Marketing, Ads, Email and Social","oneLineDescription":"A robust marketing API suite for managing ad campaigns, targeting, performance reporting, and audience data across Meta's advertising platforms.","authMethods":["OAuth2","Bearer Token"],"accessType":"Self-serve","gatingDetails":"Developers can create a Meta for Developers account for free and register apps to obtain access tokens; production access may require a review process for specific permissions.","apiSurface":"REST, GraphQL","apiBreadth":"Broad","existingMcp":false,"buildabilityVerdict":"Buildable","mainBlocker":"None","evidenceUrl":"https://developers.facebook.com/docs/marketing-apis"},{"id":33,"name":"LinkedIn Ads","category":"Marketing, Ads, Email and Social","oneLineDescription":"A marketing platform for creating, managing, and optimizing advertising campaigns on LinkedIn.","authMethods":["OAuth2"],"accessType":"Gated","gatingDetails":"Requires a LinkedIn Marketing Developer Platform application; access to certain ad APIs often requires review and approval from LinkedIn partnership teams.","apiSurface":"REST","apiBreadth":"Broad","existingMcp":false,"buildabilityVerdict":"Medium Difficulty","mainBlocker":"Requires app review and approval for production access to Marketing APIs","evidenceUrl":"https://learn.microsoft.com/en-us/linkedin/marketing/overview"},{"id":34,"name":"GoHighLevel","category":"Marketing, Ads, Email and Social","oneLineDescription":"All-in-one sales and marketing platform providing CRM, email marketing, funnel building, and automation tools.","authMethods":["OAuth2","API Key"],"accessType":"Gated","gatingDetails":"Developers can create an account and generate API keys or set up OAuth apps through the platform's 'Marketplace' or 'Settings' sections without manual approval.","apiSurface":"REST","apiBreadth":"Broad","existingMcp":false,"buildabilityVerdict":"Gated Blocker","mainBlocker":"Agency or Pro account required for developer portal access","evidenceUrl":"https://highlevel.stoplight.io/docs/integrations/e72a443a57125-getting-started"},{"id":35,"name":"Mailchimp","category":"Marketing, Ads, Email and Social","oneLineDescription":"All-in-one marketing platform for email campaigns, automation, and audience management.","authMethods":["OAuth2","API Key"],"accessType":"Self-serve","gatingDetails":"Developers can create a free account and generate API keys or set up OAuth2 applications through the Mailchimp developer dashboard immediately.","apiSurface":"REST","apiBreadth":"Broad","existingMcp":false,"buildabilityVerdict":"Buildable","mainBlocker":"None","evidenceUrl":"https://mailchimp.com/developer/marketing/api/"},{"id":36,"name":"Klaviyo","category":"Marketing, Ads, Email and Social","oneLineDescription":"A marketing automation and customer data platform providing email, SMS, and push notification tools.","authMethods":["Bearer Token"],"accessType":"Self-serve","gatingDetails":"Developers can sign up for a free Klaviyo account and create private API keys in the dashboard without manual approval.","apiSurface":"REST","apiBreadth":"Broad","existingMcp":false,"buildabilityVerdict":"Buildable","mainBlocker":"None","evidenceUrl":"https://developers.klaviyo.com/"},{"id":37,"name":"systeme.io","category":"Marketing, Ads, Email and Social","oneLineDescription":"All-in-one marketing platform for building sales funnels, email campaigns, online courses, and affiliate programs.","authMethods":["API Key"],"accessType":"Self-serve","gatingDetails":"API access is available to users within the platform dashboard under settings; no special tier requirements are typically listed for basic access.","apiSurface":"REST","apiBreadth":"Medium","existingMcp":false,"buildabilityVerdict":"Buildable","mainBlocker":"None","evidenceUrl":"https://docs.systeme.io/"},{"id":38,"name":"Pinterest","category":"Marketing, Ads, Email and Social","oneLineDescription":"A visual discovery engine for finding ideas like recipes, home inspiration, style, and more, with an API for managing Pins, Boards, and Ads.","authMethods":["OAuth2","Bearer Token"],"accessType":"Self-serve","gatingDetails":"Developers can create an app in the Pinterest developer portal to obtain credentials without immediate sales contact.","apiSurface":"REST","apiBreadth":"Broad","existingMcp":false,"buildabilityVerdict":"Buildable","mainBlocker":"None","evidenceUrl":"https://developers.pinterest.com/"},{"id":39,"name":"Threads (Meta)","category":"Marketing, Ads, Email and Social","oneLineDescription":"Threads API allows developers to publish posts, retrieve insights, and manage interactions on the Threads social media platform.","authMethods":["OAuth2"],"accessType":"Self-serve","gatingDetails":"Developers can create an app via the Meta for Developers portal, register their app, and authenticate users via OAuth2, all accessible for free.","apiSurface":"REST","apiBreadth":"Medium","existingMcp":false,"buildabilityVerdict":"Buildable","mainBlocker":"None","evidenceUrl":"https://developers.facebook.com/docs/threads"},{"id":40,"name":"SendGrid","category":"Marketing, Ads, Email and Social","oneLineDescription":"A cloud-based platform for transactional and marketing email delivery and management.","authMethods":["API Key","Bearer Token"],"accessType":"Self-serve","gatingDetails":"Developers can sign up for a free tier account and generate API keys instantly through the dashboard.","apiSurface":"REST","apiBreadth":"Broad","existingMcp":false,"buildabilityVerdict":"Buildable","mainBlocker":"None","evidenceUrl":"https://docs.sendgrid.com/api-reference/how-to-use-the-sendgrid-v3-api/authentication"},{"id":41,"name":"Shopify","category":"Ecommerce","oneLineDescription":"A leading commerce platform that allows anyone to set up an online store and sell products.","authMethods":["OAuth2","API Key"],"accessType":"Self-serve","gatingDetails":"Developers can create a free Partner account to generate API credentials and create development stores.","apiSurface":"REST, GraphQL","apiBreadth":"Broad","existingMcp":true,"buildabilityVerdict":"Buildable","mainBlocker":"None","evidenceUrl":"https://shopify.dev/docs/api"},{"id":42,"name":"WooCommerce","category":"Ecommerce","oneLineDescription":"A flexible, open-source e-commerce platform built on WordPress for selling products and managing online stores.","authMethods":["OAuth2","Basic"],"accessType":"Self-serve","gatingDetails":"Credentials can be generated directly within the WooCommerce plugin settings on any self-hosted WordPress site.","apiSurface":"REST","apiBreadth":"Broad","existingMcp":false,"buildabilityVerdict":"Buildable","mainBlocker":"None","evidenceUrl":"https://woocommerce.com/document/woocommerce-rest-api/"},{"id":43,"name":"BigCommerce","category":"Ecommerce","oneLineDescription":"A robust SaaS ecommerce platform providing comprehensive APIs for storefront management, product catalog, orders, and customer data.","authMethods":["OAuth2","Bearer Token"],"accessType":"Self-serve","gatingDetails":"Developers can create a free trial store or a sandbox store via the BigCommerce Dev Center to obtain API credentials instantly.","apiSurface":"REST, GraphQL","apiBreadth":"Broad","existingMcp":false,"buildabilityVerdict":"Buildable","mainBlocker":"None","evidenceUrl":"https://developer.bigcommerce.com/docs"},{"id":44,"name":"Salesforce Commerce Cloud","category":"Ecommerce","oneLineDescription":"A scalable, cloud-based commerce platform providing APIs for store management, product catalogs, order processing, and customer data.","authMethods":["OAuth2","Bearer Token"],"accessType":"Gated","gatingDetails":"Requires a Salesforce customer or partner account and access to the Salesforce B2C Commerce platform, which is typically enterprise-tier.","apiSurface":"REST, GraphQL, SOAP, CLI","apiBreadth":"Broad","existingMcp":false,"buildabilityVerdict":"Gated Blocker","mainBlocker":"Requires enterprise-tier Salesforce Commerce Cloud account and platform access; not accessible via open self-serve registration.","evidenceUrl":"https://developer.salesforce.com/docs/commerce"},{"id":45,"name":"Magento (Adobe Commerce)","category":"Ecommerce","oneLineDescription":"A powerful, open-source and enterprise-grade e-commerce platform providing extensive commerce functionality and content management capabilities.","authMethods":["OAuth2","Token","Bearer Token"],"accessType":"Self-serve","gatingDetails":"Self-hosted instances allow full access; cloud instances require developer environment access. Free to download and build against locally.","apiSurface":"REST, GraphQL, SOAP","apiBreadth":"Broad","existingMcp":false,"buildabilityVerdict":"Buildable","mainBlocker":"None","evidenceUrl":"https://developer.adobe.com/commerce/webapi/"},{"id":46,"name":"Squarespace","category":"Ecommerce","oneLineDescription":"A comprehensive platform for building websites, online stores, and managing domain and commerce operations.","authMethods":["API Key","OAuth2"],"accessType":"Self-serve","gatingDetails":"Developers can create an account and generate API keys through the Squarespace Developer Platform portal without requiring enterprise approval.","apiSurface":"REST","apiBreadth":"Broad","existingMcp":false,"buildabilityVerdict":"Buildable","mainBlocker":"None","evidenceUrl":"https://developers.squarespace.com/"},{"id":47,"name":"Ecwid","category":"Ecommerce","oneLineDescription":"A cloud-based ecommerce platform that allows businesses to create online stores and integrate them into existing websites, social media, and marketplaces.","authMethods":["OAuth2","Bearer Token"],"accessType":"Self-serve","gatingDetails":"Developers can register for a free account on the Ecwid Control Panel and create applications in the 'My Apps' section to obtain client IDs and secrets.","apiSurface":"REST","apiBreadth":"Broad","existingMcp":false,"buildabilityVerdict":"Buildable","mainBlocker":"None","evidenceUrl":"https://api-docs.ecwid.com/reference"},{"id":48,"name":"Gumroad","category":"Ecommerce","oneLineDescription":"A platform for creators to sell digital and physical products, memberships, and courses directly to their audience.","authMethods":["Token"],"accessType":"Self-serve","gatingDetails":"API access token can be generated directly from the user's dashboard settings under the 'Advanced' section.","apiSurface":"REST","apiBreadth":"Medium","existingMcp":false,"buildabilityVerdict":"Buildable","mainBlocker":"None","evidenceUrl":"https://gumroad.com/api"},{"id":49,"name":"Amazon Selling Partner","category":"Ecommerce","oneLineDescription":"A REST-based API that allows Amazon selling partners to programmatically access their data on orders, shipments, payments, and more.","authMethods":["OAuth2","Bearer Token"],"accessType":"Gated","gatingDetails":"Requires a registered Amazon Seller Central account and a formal application process through the Selling Partner API developer portal, which involves identity verification and security assessment.","apiSurface":"REST","apiBreadth":"Broad","existingMcp":false,"buildabilityVerdict":"Medium Difficulty","mainBlocker":"Requires a validated Seller Central account and a formal application/approval process for developer credentials.","evidenceUrl":"https://developer-docs.amazon.com/sp-api"},{"id":50,"name":"fanbasis","category":"Ecommerce","oneLineDescription":"A platform for creators to sell digital content, merchandise, and experiences directly to their fans.","authMethods":["None"],"accessType":"Gated","gatingDetails":"Fanbasis operates as a proprietary consumer-facing marketplace; there is no public developer platform, API documentation, or self-service access for third-party integrations.","apiSurface":"None","apiBreadth":"None","existingMcp":false,"buildabilityVerdict":"No API Blocker","mainBlocker":"No public API or developer platform available","evidenceUrl":"https://fanbasis.com/"},{"id":51,"name":"DataForSEO","category":"Data, SEO and Scraping","oneLineDescription":"A comprehensive suite of SEO, SERP, and marketing data APIs for programmatic data extraction and analysis.","authMethods":["API Key"],"accessType":"Self-serve","gatingDetails":"Developers can register for a free account, deposit funds to their balance, and generate API credentials instantly.","apiSurface":"REST","apiBreadth":"Broad","existingMcp":false,"buildabilityVerdict":"Buildable","mainBlocker":"None","evidenceUrl":"https://docs.dataforseo.com/v3/getting-started/authentication/"},{"id":52,"name":"SE Ranking","category":"Data, SEO and Scraping","oneLineDescription":"An all-in-one SEO software that provides tools for keyword tracking, website auditing, competitor analysis, and backlink monitoring.","authMethods":["Token"],"accessType":"Gated","gatingDetails":"API access is available only to users on Business and Enterprise subscription plans.","apiSurface":"REST","apiBreadth":"Broad","existingMcp":false,"buildabilityVerdict":"Gated Blocker","mainBlocker":"Requires a paid subscription on a Business or Enterprise plan; no free or trial API tier available.","evidenceUrl":"https://seranking.com/api.html"},{"id":53,"name":"Ahrefs","category":"Data, SEO and Scraping","oneLineDescription":"Comprehensive SEO software suite providing data on backlinks, keyword research, site audits, and competitor analysis.","authMethods":["API Key"],"accessType":"Gated","gatingDetails":"API access is available exclusively through the Ahrefs V2 API, which requires a subscription to specific enterprise-level or professional plans, and individual API tokens are managed via the Ahrefs dashboard.","apiSurface":"REST","apiBreadth":"Broad","existingMcp":false,"buildabilityVerdict":"Gated Blocker","mainBlocker":"Requires a paid subscription plan; API access is not available through a free-tier developer sandbox.","evidenceUrl":"https://ahrefs.com/api"},{"id":54,"name":"MrScraper","category":"Data, SEO and Scraping","oneLineDescription":"A cloud-based web scraping service that converts websites into structured data (JSON/CSV) without writing code.","authMethods":["API Key"],"accessType":"Self-serve","gatingDetails":"Users can create an account and generate an API key instantly via the dashboard upon registration.","apiSurface":"REST","apiBreadth":"Medium","existingMcp":false,"buildabilityVerdict":"Buildable","mainBlocker":"None","evidenceUrl":"https://docs.mrscraper.com/api-reference/authentication"},{"id":55,"name":"Apify","category":"Data, SEO and Scraping","oneLineDescription":"A cloud platform for web scraping and data extraction that allows users to run headless browsers and automation actors.","authMethods":["API Key","Bearer Token"],"accessType":"Self-serve","gatingDetails":"Free developer account available with instant API token generation.","apiSurface":"REST, CLI","apiBreadth":"Broad","existingMcp":true,"buildabilityVerdict":"Buildable","mainBlocker":"None","evidenceUrl":"https://docs.apify.com/api/v2"},{"id":56,"name":"Firecrawl","category":"Data, SEO and Scraping","oneLineDescription":"Turn websites into clean markdown for LLMs with a dedicated web scraping API.","authMethods":["API Key"],"accessType":"Self-serve","gatingDetails":"Sign up for a free developer account at firecrawl.dev to generate an API key instantly.","apiSurface":"REST","apiBreadth":"Broad","existingMcp":true,"buildabilityVerdict":"Buildable","mainBlocker":"None","evidenceUrl":"https://docs.firecrawl.dev/"},{"id":57,"name":"Bright Data","category":"Data, SEO and Scraping","oneLineDescription":"A comprehensive web data platform providing proxy networks, web scrapers, and datasets for automated data collection.","authMethods":["API Key","Token"],"accessType":"Self-serve","gatingDetails":"Free trial available upon sign-up; API access is provisioned through the user dashboard for self-serve accounts.","apiSurface":"REST","apiBreadth":"Broad","existingMcp":false,"buildabilityVerdict":"Buildable","mainBlocker":"None","evidenceUrl":"https://docs.brightdata.com/api-reference/overview"},{"id":58,"name":"Sherlock","category":"Data, SEO and Scraping","oneLineDescription":"An open-source intelligence tool that finds usernames across hundreds of social networks.","authMethods":["None"],"accessType":"Self-serve","gatingDetails":"Open-source software; no credentials required for local execution.","apiSurface":"CLI","apiBreadth":"Narrow","existingMcp":false,"buildabilityVerdict":"Buildable","mainBlocker":"None","evidenceUrl":"https://github.com/sherlock-project/sherlock"},{"id":59,"name":"Waterfall.io","category":"Data, SEO and Scraping","oneLineDescription":"A platform providing B2B contact intelligence, lead enrichment, and sales prospecting data.","authMethods":["API Key"],"accessType":"Gated","gatingDetails":"Requires contact sales or request for demo; no self-serve developer portal or public documentation available.","apiSurface":"None","apiBreadth":"None","existingMcp":false,"buildabilityVerdict":"No API Blocker","mainBlocker":"No public API documentation or self-serve developer access available.","evidenceUrl":"https://www.waterfall.io/"},{"id":60,"name":"Clay","category":"Data, SEO and Scraping","oneLineDescription":"An AI-powered data enrichment and outbound prospecting platform that automates research and list building.","authMethods":["API Key"],"accessType":"Gated","gatingDetails":"API access is restricted to Pro and Enterprise plans; a paid subscription is required to generate an API key within the workspace settings.","apiSurface":"REST","apiBreadth":"Broad","existingMcp":false,"buildabilityVerdict":"Gated Blocker","mainBlocker":"Requires a paid Pro or Enterprise subscription to access API keys.","evidenceUrl":"https://help.clay.com/en/articles/9327889-using-the-clay-api"},{"id":61,"name":"GitHub","category":"Developer, Infra and Data platforms","oneLineDescription":"A platform for software development, version control, and collaboration, offering extensive APIs for automation and integration.","authMethods":["OAuth2","Bearer Token","Basic"],"accessType":"Self-serve","gatingDetails":"Self-serve access via personal access tokens or OAuth apps within any GitHub account settings.","apiSurface":"REST, GraphQL, CLI","apiBreadth":"Broad","existingMcp":true,"buildabilityVerdict":"Buildable","mainBlocker":"None","evidenceUrl":"https://docs.github.com/rest"},{"id":62,"name":"Vercel","category":"Developer, Infra and Data platforms","oneLineDescription":"A cloud platform for static sites and Serverless Functions that enables developers to host websites and web services that deploy instantly.","authMethods":["Bearer Token","OAuth2"],"accessType":"Self-serve","gatingDetails":"Self-serve via Vercel dashboard under account settings to generate personal access tokens.","apiSurface":"REST, GraphQL, CLI","apiBreadth":"Broad","existingMcp":true,"buildabilityVerdict":"Buildable","mainBlocker":"None","evidenceUrl":"https://vercel.com/docs/rest-api"},{"id":63,"name":"Netlify","category":"Developer, Infra and Data platforms","oneLineDescription":"A unified platform for building, deploying, and scaling web applications and serverless functions.","authMethods":["OAuth2","Bearer Token"],"accessType":"Self-serve","gatingDetails":"Available via user settings in the Netlify dashboard for any account type.","apiSurface":"REST, CLI","apiBreadth":"Broad","existingMcp":false,"buildabilityVerdict":"Buildable","mainBlocker":"None","evidenceUrl":"https://docs.netlify.com/api/"},{"id":64,"name":"Cloudflare","category":"Developer, Infra and Data platforms","oneLineDescription":"A comprehensive cloud platform offering CDN, DNS, security, and serverless compute services for web infrastructure.","authMethods":["API Key","Bearer Token"],"accessType":"Self-serve","gatingDetails":"Developers can generate API tokens and keys instantly via the Cloudflare dashboard without human intervention or specific plan requirements for core API access.","apiSurface":"REST, GraphQL","apiBreadth":"Broad","existingMcp":true,"buildabilityVerdict":"Buildable","mainBlocker":"None","evidenceUrl":"https://developers.cloudflare.com/api/"},{"id":65,"name":"Supabase","category":"Developer, Infra and Data platforms","oneLineDescription":"An open source Firebase alternative that provides a suite of backend services including PostgreSQL database, authentication, real-time subscriptions, and storage.","authMethods":["Token","API Key"],"accessType":"Self-serve","gatingDetails":"Free developer account allows instant generation of API keys and project tokens via the dashboard.","apiSurface":"REST","apiBreadth":"Broad","existingMcp":true,"buildabilityVerdict":"Buildable","mainBlocker":"None","evidenceUrl":"https://supabase.com/docs/reference/api/introduction"},{"id":66,"name":"Neo4j","category":"Developer, Infra and Data platforms","oneLineDescription":"A leading graph database platform designed to store and query highly connected data.","authMethods":["Basic","Bearer Token"],"accessType":"Self-serve","gatingDetails":"Developers can download Neo4j Desktop or sign up for Neo4j Aura (DBaaS) to get free tier access and credentials immediately.","apiSurface":"REST, GraphQL, CLI","apiBreadth":"Broad","existingMcp":true,"buildabilityVerdict":"Buildable","mainBlocker":"None","evidenceUrl":"https://neo4j.com/docs/http-api/current/"},{"id":67,"name":"Snowflake","category":"Developer, Infra and Data platforms","oneLineDescription":"A cloud-based data platform that provides data storage, processing, and analytics solutions.","authMethods":["OAuth2","Bearer Token","Basic"],"accessType":"Self-serve","gatingDetails":"Users can sign up for a 30-day free trial without a credit card to access the Snowflake account and generate API credentials.","apiSurface":"REST, SQL","apiBreadth":"Broad","existingMcp":true,"buildabilityVerdict":"Buildable","mainBlocker":"None","evidenceUrl":"https://docs.snowflake.com/en/developer-guide/sql-api/index"},{"id":68,"name":"MongoDB Atlas","category":"Developer, Infra and Data platforms","oneLineDescription":"A fully managed multi-cloud developer data platform with a versatile database service.","authMethods":["API Key","Digest Auth"],"accessType":"Self-serve","gatingDetails":"Developers can create a free-tier account and generate Programmatic API Keys immediately via the Atlas dashboard.","apiSurface":"REST, CLI","apiBreadth":"Broad","existingMcp":false,"buildabilityVerdict":"Buildable","mainBlocker":"None","evidenceUrl":"https://www.mongodb.com/docs/atlas/api/"},{"id":69,"name":"Datadog","category":"Developer, Infra and Data platforms","oneLineDescription":"A monitoring and analytics platform for cloud-scale applications, providing observability for infrastructure, logs, traces, and security.","authMethods":["API Key","Bearer Token"],"accessType":"Self-serve","gatingDetails":"Users can generate API and Application keys directly from the Datadog dashboard after signing up for a trial or paid account.","apiSurface":"REST, CLI","apiBreadth":"Broad","existingMcp":false,"buildabilityVerdict":"Buildable","mainBlocker":"None","evidenceUrl":"https://docs.datadoghq.com/api/latest/"},{"id":70,"name":"Sentry","category":"Developer, Infra and Data platforms","oneLineDescription":"Error tracking and performance monitoring platform for developers to diagnose, fix, and optimize application performance.","authMethods":["Bearer Token","OAuth2"],"accessType":"Self-serve","gatingDetails":"Developers can create an account and generate Internal Integration tokens or OAuth applications instantly from the user settings panel.","apiSurface":"REST","apiBreadth":"Broad","existingMcp":false,"buildabilityVerdict":"Buildable","mainBlocker":"None","evidenceUrl":"https://docs.sentry.io/api/"},{"id":71,"name":"Notion","category":"Productivity and Project Management","oneLineDescription":"A connected workspace for notes, tasks, wikis, and databases.","authMethods":["OAuth2","Bearer Token"],"accessType":"Self-serve","gatingDetails":"Developers can create internal or public integrations via the Notion developer portal with no cost or manual approval.","apiSurface":"REST","apiBreadth":"Broad","existingMcp":true,"buildabilityVerdict":"Buildable","mainBlocker":"None","evidenceUrl":"https://developers.notion.com/"},{"id":72,"name":"Airtable","category":"Productivity and Project Management","oneLineDescription":"A low-code platform for building collaborative apps and managing relational data through flexible databases.","authMethods":["Bearer Token","OAuth2"],"accessType":"Self-serve","gatingDetails":"Developers can generate Personal Access Tokens or create OAuth integrations directly via the Airtable developer dashboard without manual approval.","apiSurface":"REST","apiBreadth":"Broad","existingMcp":true,"buildabilityVerdict":"Buildable","mainBlocker":"None","evidenceUrl":"https://airtable.com/developers/web/api/introduction"},{"id":73,"name":"Linear","category":"Productivity and Project Management","oneLineDescription":"A streamlined issue tracking and project management tool designed for high-performance software teams.","authMethods":["OAuth2","Bearer Token"],"accessType":"Self-serve","gatingDetails":"Developers can create personal API keys or OAuth apps directly through their Linear workspace settings without additional approval or paid requirements.","apiSurface":"GraphQL","apiBreadth":"Broad","existingMcp":true,"buildabilityVerdict":"Buildable","mainBlocker":"None","evidenceUrl":"https://developers.linear.app/"},{"id":74,"name":"Jira","category":"Productivity and Project Management","oneLineDescription":"A powerful project management tool for software development teams to track, plan, and manage agile projects.","authMethods":["OAuth2","Bearer Token","Basic"],"accessType":"Self-serve","gatingDetails":"Developers can create a free Atlassian account and generate API tokens via the Atlassian developer portal.","apiSurface":"REST, GraphQL","apiBreadth":"Broad","existingMcp":true,"buildabilityVerdict":"Buildable","mainBlocker":"None","evidenceUrl":"https://developer.atlassian.com/cloud/jira/platform/rest/v3/intro/"},{"id":75,"name":"Asana","category":"Productivity and Project Management","oneLineDescription":"A work management platform designed to help teams orchestrate their work, from daily tasks to cross-functional strategic initiatives.","authMethods":["OAuth2","Bearer Token"],"accessType":"Self-serve","gatingDetails":"Developers can create an account and generate Personal Access Tokens or register applications for OAuth2 instantly via the Asana developer console.","apiSurface":"REST","apiBreadth":"Broad","existingMcp":true,"buildabilityVerdict":"Buildable","mainBlocker":"None","evidenceUrl":"https://developers.asana.com/docs"},{"id":76,"name":"Monday.com","category":"Productivity and Project Management","oneLineDescription":"A cloud-based work operating system that allows teams to build custom workflow applications and manage projects.","authMethods":["OAuth2","API Key"],"accessType":"Self-serve","gatingDetails":"Developers can sign up for a free developer account and create apps directly in the Monday.com developer portal to obtain API tokens.","apiSurface":"GraphQL","apiBreadth":"Broad","existingMcp":true,"buildabilityVerdict":"Buildable","mainBlocker":"None","evidenceUrl":"https://developer.monday.com/docs"},{"id":77,"name":"ClickUp","category":"Productivity and Project Management","oneLineDescription":"A comprehensive cloud-based project management and productivity platform for tasks, docs, and collaboration.","authMethods":["OAuth2","API Key"],"accessType":"Self-serve","gatingDetails":"Developers can generate personal API tokens or create OAuth apps directly from their workspace settings without requiring manual approval.","apiSurface":"REST","apiBreadth":"Broad","existingMcp":true,"buildabilityVerdict":"Buildable","mainBlocker":"None","evidenceUrl":"https://clickup.com/api"},{"id":78,"name":"Coda","category":"Productivity and Project Management","oneLineDescription":"An all-in-one document workspace that combines text and data tables with automation capabilities.","authMethods":["Bearer Token"],"accessType":"Self-serve","gatingDetails":"Developers can generate personal API tokens directly from their Coda account settings without restrictions.","apiSurface":"REST","apiBreadth":"Broad","existingMcp":false,"buildabilityVerdict":"Buildable","mainBlocker":"None","evidenceUrl":"https://coda.io/developers/apis/v1"},{"id":79,"name":"Smartsheet","category":"Productivity and Project Management","oneLineDescription":"A collaborative work management and automation platform for project tracking, resource management, and process automation.","authMethods":["OAuth2","Bearer Token"],"accessType":"Self-serve","gatingDetails":"Developers can register an app and generate API access tokens directly through the Smartsheet Developer Portal without requiring an enterprise account.","apiSurface":"REST","apiBreadth":"Broad","existingMcp":false,"buildabilityVerdict":"Buildable","mainBlocker":"None","evidenceUrl":"https://smartsheet.redoc.ly/"},{"id":80,"name":"Harvest","category":"Productivity and Project Management","oneLineDescription":"Time tracking and invoicing software for businesses and freelancers.","authMethods":["OAuth2","Bearer Token"],"accessType":"Self-serve","gatingDetails":"Developers can register an OAuth2 client or generate a Personal Access Token via their Harvest account settings instantly.","apiSurface":"REST","apiBreadth":"Broad","existingMcp":false,"buildabilityVerdict":"Buildable","mainBlocker":"None","evidenceUrl":"https://help.getharvest.com/api-v2/"},{"id":81,"name":"Stripe","category":"Finance and Fintech","oneLineDescription":"A global payment processing platform that provides APIs for handling payments, billing, subscriptions, and financial management.","authMethods":["Bearer Token","API Key"],"accessType":"Self-serve","gatingDetails":"Developers can create a free account and access secret/publishable API keys immediately for testing in sandbox mode.","apiSurface":"REST","apiBreadth":"Broad","existingMcp":true,"buildabilityVerdict":"Buildable","mainBlocker":"None","evidenceUrl":"https://stripe.com/docs/api"},{"id":82,"name":"Plaid","category":"Finance and Fintech","oneLineDescription":"A financial data infrastructure platform that enables applications to connect with users' bank accounts and financial institutions.","authMethods":["API Key","OAuth2"],"accessType":"Self-serve","gatingDetails":"Developers can sign up for a free development account on the Plaid dashboard to receive sandbox API keys instantly.","apiSurface":"REST","apiBreadth":"Broad","existingMcp":false,"buildabilityVerdict":"Buildable","mainBlocker":"None","evidenceUrl":"https://plaid.com/docs/api/"},{"id":83,"name":"Binance","category":"Finance and Fintech","oneLineDescription":"A global cryptocurrency exchange providing an extensive suite of financial services and digital asset trading tools.","authMethods":["API Key"],"accessType":"Self-serve","gatingDetails":"Developers can generate API keys directly through their account settings after completing identity verification (KYC).","apiSurface":"REST, WebSocket","apiBreadth":"Broad","existingMcp":false,"buildabilityVerdict":"Buildable","mainBlocker":"None","evidenceUrl":"https://binance-docs.github.io/apidocs/"},{"id":84,"name":"Paygent Connect","category":"Finance and Fintech","oneLineDescription":"A payment gateway solution powered by NMI providing secure transaction processing and payment integrations.","authMethods":["API Key"],"accessType":"Gated","gatingDetails":"Requires a merchant account with Paygent (NMI) which involves a business application process, underwriting, and setup fees.","apiSurface":"REST","apiBreadth":"Broad","existingMcp":false,"buildabilityVerdict":"Gated Blocker","mainBlocker":"Requires merchant account and API key setup through support","evidenceUrl":"https://www.paygent.co.jp/en/service/connect/"},{"id":85,"name":"iPayX","category":"Finance and Fintech","oneLineDescription":"An automated accounts payable platform that integrates with ERPs to streamline vendor payments and invoice processing.","authMethods":["API Key","Bearer Token"],"accessType":"Gated","gatingDetails":"Access to API credentials requires a partnership or enterprise agreement, typically mediated through direct contact with their sales or account management team.","apiSurface":"REST","apiBreadth":"Medium","existingMcp":false,"buildabilityVerdict":"Gated Blocker","mainBlocker":"Requires contact sales and enterprise plan/partnership to access API credentials.","evidenceUrl":"https://ipayx.ai/docs"},{"id":86,"name":"QuickBooks","category":"Finance and Fintech","oneLineDescription":"A cloud-based accounting software suite that manages payroll, inventory, sales, and other business needs.","authMethods":["OAuth2"],"accessType":"Self-serve","gatingDetails":"Developers can sign up for a free Intuit Developer account and access the sandbox environment immediately after creating an app on the developer portal.","apiSurface":"REST","apiBreadth":"Broad","existingMcp":false,"buildabilityVerdict":"Buildable","mainBlocker":"None","evidenceUrl":"https://developer.intuit.com/"},{"id":87,"name":"Xero","category":"Finance and Fintech","oneLineDescription":"A cloud-based accounting software platform for small and medium-sized businesses.","authMethods":["OAuth2"],"accessType":"Self-serve","gatingDetails":"Developers can sign up for a free Xero developer account and create apps instantly via the developer portal without manual approval.","apiSurface":"REST","apiBreadth":"Broad","existingMcp":false,"buildabilityVerdict":"Buildable","mainBlocker":"None","evidenceUrl":"https://developer.xero.com/"},{"id":88,"name":"Brex","category":"Finance and Fintech","oneLineDescription":"A corporate card and spend management platform that provides APIs for financial data, payments, and expense reconciliation.","authMethods":["OAuth2"],"accessType":"Gated","gatingDetails":"Requires a Brex business account, and API access is typically enabled for customers via the developer dashboard or by contacting support/account management.","apiSurface":"REST","apiBreadth":"Broad","existingMcp":false,"buildabilityVerdict":"Gated Blocker","mainBlocker":"Requires an existing corporate Brex account and enterprise-level access; it is not a public sandbox for independent developers.","evidenceUrl":"https://developer.brex.com/openapi/"},{"id":89,"name":"Ramp","category":"Finance and Fintech","oneLineDescription":"A modern corporate card and spend management platform that provides expense automation, accounting integrations, and real-time spend visibility.","authMethods":["Bearer Token"],"accessType":"Gated","gatingDetails":"API access is managed via the Ramp dashboard under 'API' settings; requires admin permissions and generation of a developer token.","apiSurface":"REST","apiBreadth":"Broad","existingMcp":false,"buildabilityVerdict":"Gated Blocker","mainBlocker":"Requires partner or enterprise credentials","evidenceUrl":"https://docs.ramp.com/developers"},{"id":90,"name":"PitchBook","category":"Finance and Fintech","oneLineDescription":"A comprehensive data platform providing intelligence on capital markets, private equity, venture capital, and M&A activity.","authMethods":["API Key"],"accessType":"Gated","gatingDetails":"Access is restricted to existing PitchBook clients with an enterprise subscription and requires manual approval and provisioning by PitchBook account representatives.","apiSurface":"REST","apiBreadth":"Broad","existingMcp":false,"buildabilityVerdict":"Gated Blocker","mainBlocker":"Requires contact sales and enterprise plan; no self-serve developer access.","evidenceUrl":"https://pitchbook.com/help/api"},{"id":91,"name":"NotebookLM","category":"AI, Research and Media-native","oneLineDescription":"An AI-powered research and note-taking assistant that lets users ground Gemini models in their own uploaded documents.","authMethods":["API Key"],"accessType":"Gated","gatingDetails":"NotebookLM currently functions as a consumer-facing web application without a public-facing developer API or SDK.","apiSurface":"REST","apiBreadth":"None","existingMcp":true,"buildabilityVerdict":"No API Blocker","mainBlocker":"No public API available","evidenceUrl":"https://notebooklm.google.com/"},{"id":92,"name":"Otter AI","category":"AI, Research and Media-native","oneLineDescription":"Otter AI provides AI-powered meeting notes, transcription, and real-time conversation intelligence.","authMethods":["Token"],"accessType":"Gated","gatingDetails":"Otter AI does not provide a public self-serve developer API. Integration access is typically restricted to enterprise-tier partnerships and requires manual contact with sales.","apiSurface":"REST","apiBreadth":"None","existingMcp":true,"buildabilityVerdict":"No API Blocker","mainBlocker":"Enterprise/Partner only access for write APIs","evidenceUrl":"https://otter.ai/integrations"},{"id":93,"name":"Fathom","category":"AI, Research and Media-native","oneLineDescription":"An AI-powered meeting recording and transcription platform that captures meeting insights and action items.","authMethods":["None"],"accessType":"Gated","gatingDetails":"No public developer API available. Integration is limited to pre-built native integrations via their platform UI/Settings (e.g., Salesforce, HubSpot, Slack, Zoom).","apiSurface":"None","apiBreadth":"None","existingMcp":false,"buildabilityVerdict":"No API Blocker","mainBlocker":"No public API available for third-party developer integration.","evidenceUrl":"https://fathom.video/integrations"},{"id":94,"name":"Consensus","category":"AI, Research and Media-native","oneLineDescription":"An AI-powered search engine that extracts and synthesizes findings directly from scientific research papers.","authMethods":["API Key"],"accessType":"Gated","gatingDetails":"API access is currently gated and requires contacting their team or requesting access through their developer portal/waitlist.","apiSurface":"REST","apiBreadth":"Narrow","existingMcp":false,"buildabilityVerdict":"Gated Blocker","mainBlocker":"Requires contact sales or request for developer access as there is no self-serve public API documentation available.","evidenceUrl":"https://consensus.app/developers/"},{"id":95,"name":"Reducto","category":"AI, Research and Media-native","oneLineDescription":"An AI-powered document parsing engine that converts complex PDFs and unstructured files into clean, structured data for LLMs.","authMethods":["API Key"],"accessType":"Self-serve","gatingDetails":"Users can sign up on the platform and generate API keys through the dashboard under account settings.","apiSurface":"REST","apiBreadth":"Medium","existingMcp":false,"buildabilityVerdict":"Buildable","mainBlocker":"None","evidenceUrl":"https://docs.reducto.ai/"},{"id":96,"name":"Devin","category":"AI, Research and Media-native","oneLineDescription":"An autonomous AI software engineer capable of planning, coding, debugging, and deploying software projects.","authMethods":["API Key"],"accessType":"Gated","gatingDetails":"Devin is currently in an invite-only early access phase; access typically requires requesting a waitlist spot or enterprise partnership.","apiSurface":"REST","apiBreadth":"None","existingMcp":true,"buildabilityVerdict":"No API Blocker","mainBlocker":"No public API available","evidenceUrl":"https://www.devin.ai/"},{"id":97,"name":"higgsfield","category":"AI, Research and Media-native","oneLineDescription":"An AI-powered video generation platform offering a content suite and generative video tools.","authMethods":["None"],"accessType":"Gated","gatingDetails":"Currently accessible via web application and mobile app; no public-facing developer API or documentation exists.","apiSurface":"None","apiBreadth":"None","existingMcp":false,"buildabilityVerdict":"No API Blocker","mainBlocker":"No public API available for developer integration.","evidenceUrl":"https://higgsfield.ai/"},{"id":98,"name":"Mermaid CLI","category":"AI, Research and Media-native","oneLineDescription":"A command-line interface tool to render Mermaid diagrams into various image formats like PNG, SVG, and PDF.","authMethods":["None"],"accessType":"Self-serve","gatingDetails":"Open source tool available via npm; no authentication required for local CLI usage.","apiSurface":"CLI","apiBreadth":"Narrow","existingMcp":false,"buildabilityVerdict":"Buildable","mainBlocker":"None","evidenceUrl":"https://github.com/mermaid-js/mermaid-cli"},{"id":99,"name":"YouTube Transcript","category":"AI, Research and Media-native","oneLineDescription":"A specialized API service that provides programmatic access to YouTube video transcripts and metadata for AI applications.","authMethods":["API Key"],"accessType":"Self-serve","gatingDetails":"Developers can sign up and receive an API key instantly upon registration via the platform's dashboard.","apiSurface":"REST","apiBreadth":"Narrow","existingMcp":false,"buildabilityVerdict":"Buildable","mainBlocker":"None","evidenceUrl":"https://transcriptapi.com/docs"},{"id":100,"name":"Grain","category":"AI, Research and Media-native","oneLineDescription":"An AI-powered meeting recording and note-taking platform that captures, transcribes, and highlights key moments from video meetings.","authMethods":["OAuth2"],"accessType":"Gated","gatingDetails":"API access is provided through the Grain Platform API, which typically requires developer account registration and is often restricted or subject to review for integrations.","apiSurface":"REST","apiBreadth":"Narrow","existingMcp":false,"buildabilityVerdict":"Medium Difficulty","mainBlocker":"Public documentation is limited and the API appears to be intended for specific partner integrations or restricted use cases.","evidenceUrl":"https://developers.grain.com/"}];
+
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(tab => {
+        tab.classList.remove('active');
+      });
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      
+      document.getElementById(tabId).classList.add('active');
+      event.target.classList.add('active');
+    }
+
+    function filterMatrix() {
+      const searchVal = document.getElementById('search-input').value.toLowerCase();
+      const catVal = document.getElementById('filter-category').value;
+      const accessVal = document.getElementById('filter-access').value;
+      const verdictVal = document.getElementById('filter-verdict').value;
+      
+      const rows = document.querySelectorAll('#matrix-table tbody tr');
+      
+      rows.forEach((row, index) => {
+        const app = appsData[index];
+        
+        const matchesSearch = app.name.toLowerCase().includes(searchVal) || 
+                              app.oneLineDescription.toLowerCase().includes(searchVal) ||
+                              app.mainBlocker.toLowerCase().includes(searchVal);
+                              
+        const matchesCat = !catVal || app.category === catVal;
+        const matchesAccess = !accessVal || app.accessType === accessVal;
+        const matchesVerdict = !verdictVal || app.buildabilityVerdict === verdictVal;
+        
+        if (matchesSearch && matchesCat && matchesAccess && matchesVerdict) {
+          row.style.display = '';
+        } else {
+          row.style.display = 'none';
+        }
+      });
+    }
+
+    function showAppDetails(appId) {
+      const app = appsData.find(a => a.id === appId);
+      if (!app) return;
+
+      const overlay = document.getElementById('drawer-overlay');
+      const drawer = document.getElementById('app-drawer');
+      const content = document.getElementById('drawer-content');
+
+      const authText = app.authMethods.join(', ');
+      
+      let verdictBadgeClass = 'badge-buildable';
+      if (app.buildabilityVerdict === 'Gated Blocker') verdictBadgeClass = 'badge-gated-blocker';
+      else if (app.buildabilityVerdict === 'No API Blocker') verdictBadgeClass = 'badge-no-api';
+      else if (app.buildabilityVerdict === 'Medium Difficulty') verdictBadgeClass = 'badge-medium-diff';
+
+      const accessBadgeClass = app.accessType === 'Self-serve' ? 'badge-self-serve' : 'badge-gated';
+
+      content.innerHTML = `
+        <h2 class="drawer-title">${app.name}</h2>
+        <div class="drawer-section">
+          <div class="drawer-label">Category</div>
+          <div class="drawer-value">${app.category}</div>
+        </div>
+        <div class="drawer-section">
+          <div class="drawer-label">What it does</div>
+          <div class="drawer-value" style="font-weight: 500;">${app.oneLineDescription}</div>
+        </div>
+        <div class="drawer-section">
+          <div class="drawer-label">Authorization model</div>
+          <div class="drawer-value"><span class="drawer-value code">${authText}</span></div>
+        </div>
+        <div class="drawer-section">
+          <div class="drawer-label">Access Type</div>
+          <div class="drawer-value" style="margin-top: 0.25rem;"><span class="badge ${accessBadgeClass}">${app.accessType}</span></div>
+        </div>
+        <div class="drawer-section">
+          <div class="drawer-label">Gating Policies</div>
+          <div class="drawer-value">${app.gatingDetails}</div>
+        </div>
+        <div class="drawer-section">
+          <div class="drawer-label">API Surface & Breadth</div>
+          <div class="drawer-value">${app.apiSurface} (${app.apiBreadth} coverage)</div>
+        </div>
+        <div class="drawer-section">
+          <div class="drawer-label">Existing MCP Server</div>
+          <div class="drawer-value">${app.existingMcp ? '✅ Yes' : '❌ No'}</div>
+        </div>
+        <div class="drawer-section">
+          <div class="drawer-label">Buildability Verdict</div>
+          <div class="drawer-value" style="margin-top: 0.25rem;"><span class="badge ${verdictBadgeClass}">${app.buildabilityVerdict}</span></div>
+        </div>
+        <div class="drawer-section">
+          <div class="drawer-label">Integration Blocker</div>
+          <div class="drawer-value" style="color: ${app.buildabilityVerdict === 'Buildable' ? 'var(--accent-emerald)' : 'var(--accent-rose)'}; font-weight: 600;">${app.mainBlocker}</div>
+        </div>
+        <div class="drawer-section" style="margin-top: 2rem; border-top: 1px solid var(--border-color); padding-top: 1.5rem;">
+          <a href="${app.evidenceUrl}" target="_blank" class="badge badge-self-serve" style="padding: 0.5rem 1rem; border-radius: 8px; font-size: 0.9rem;">View Developer Documentation ↗</a>
+        </div>
+      `;
+
+      overlay.classList.add('open');
+      drawer.classList.add('open');
+    }
+
+    function closeAppDetails() {
+      document.getElementById('drawer-overlay').classList.remove('open');
+      document.getElementById('app-drawer').classList.remove('open');
+    }
+  </script>
+</body>
+</html>

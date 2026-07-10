@@ -1,6 +1,5 @@
 .env
 node_modules/
-dist/
 data/raw_results.json
 data/verified_results.json
 data/verification_report.md
