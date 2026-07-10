@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 
 const VERIFIED_RESULTS_FILE = './data/verified_results.json';
-const UI_OUTPUT_FILE = './dist/index.html';
+const UI_OUTPUT_FILE = './index.html';
 
 function main() {
   if (!fs.existsSync(VERIFIED_RESULTS_FILE)) {

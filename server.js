@@ -3,7 +3,7 @@ import fs from 'fs';
 import path from 'path';
 
 const PORT = 3000;
-const PUBLIC_DIR = './dist';
+const PUBLIC_DIR = './';
 
 const MIME_TYPES = {
   '.html': 'text/html',
