@@ -70,4 +70,4 @@ The pipeline researches authentication models, developer gating mechanisms, API 
 ## Verification Metrics
 - **First-Pass Field Accuracy:** `48.61%` (mismatches primarily caused by naming variations of Token vs API Key, and recent API surface updates).
 - **Final Sample Accuracy:** `100.00%` after programmatic corrections and ground-truth overrides.
-- **Deployed Tunnel URL:** [https://great-drinks-bake.loca.lt](https://great-drinks-bake.loca.lt)
+- **Deployed Tunnel URL:** [https://light-lines-cheer.loca.lt](https://light-lines-cheer.loca.lt)
