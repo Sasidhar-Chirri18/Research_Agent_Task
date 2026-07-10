@@ -1,0 +1,13 @@
+{
+  "name": "research-agent-task",
+  "version": "1.0.0",
+  "description": "Research agent pipeline for Composio app integrations",
+  "main": "src/research.js",
+  "type": "module",
+  "scripts": {
+    "research": "node src/research.js",
+    "verify": "node src/verify.js",
+    "ui": "node src/generate_ui.js"
+  },
+  "dependencies": {}
+}
